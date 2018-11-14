@@ -1,0 +1,35 @@
+#qp_wp_temp_form {
+	position: fixed;
+	top: 50%;
+	transform: translateY(-50%) translateX(-50%);
+	left: 50%;
+	background-color: rgb(240, 242, 245);
+	text-align: center;
+    z-index: 9999;
+    border: 3px solid #343848;
+}
+
+#qp_wp_temp_form button {
+    width: 80%; 
+    height: 42px; 
+    position: relative; 
+    top: -21px; 
+    margin: auto;
+    color:#FFF;
+    background:#343848;
+    border: 3px solid #888;
+    border-radius: 8px;
+    font-size:1.3em;
+}
+
+#qp_wp_modal_close { position: absolute; top: 0; right: 5px; font-size: 1.5em; font-weight: bold; cursor: pointer; }
+#qp_wp_modal_close:hover { color: red; }
+#qp_wp_modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0,0,0,.5);
+    z-index: 9998;
+}

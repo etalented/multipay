@@ -1,0 +1,217 @@
+.qp-style {text-align:left;margin: 0 0 10px 0;padding: 0;}
+.qp-style form {margin:0;padding: 0;}
+.qp-style #none {border:0 solid #FFF;padding: 0;}
+.qp-style #plain {border:1px solid #415063;padding:10px;margin: 0;}
+.qp-style #rounded {border:1px solid #415063;padding:10px;-moz-border-radius: 10px;-webkit-box-shadow: 10px;border-radius: 10px;}
+.qp-style #shadow {border:1px solid #415063;padding:10px;margin:0 10px 20px 0;-webkit-box-shadow: 5px 5px 5px #415063;-moz-box-shadow: 5px 5px 5px #415063;box-shadow: 5px 5px 5px #415063;}
+.qp-style #roundshadow {border:1px solid #415063;padding:10px; margin:0 10px 20px 0;-webkit-box-shadow: 5px 5px 5px #415063;-moz-box-shadow: 5px 5px 5px #415063;box-shadow: 5px 5px 5px #415063;-moz-border-radius: 10px; -webkit-box-shadow: 10px; border-radius: 10px;}
+.qp-style p {margin:4px 0 4px 0;padding:0;color:#465069;}
+.qp-style input[type=text], .qp-style textarea, .qp-style select, .qp-style #submit {margin:5px 0 7px 0;padding:6px;color:#465069;border:1px solid #415063;width:100%;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box;}
+.qp-style input:focus, .qp-style textarea:focus {background:#FFFFCC;}
+.qp-style .error {color: #D31900;margin: 4px 0;}
+.qp-style img {width:100%;height:auto;overflow:hidden;}
+.qp-style input#submit {color: #FFF;background: #343838;text-align: center;cursor: pointer;}
+.qp-style input#submitcoupon {color: #FFF;background: #1f8416;text-align: center;cursor: pointer;margin:5px 0 7px 0;padding:6px;border:1px solid #415063;width:100%;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box;font-size:inherit;}
+span .floatleft{float:left;}
+span .floatleft.input {;padding-top:5px;}
+span .floatright {float:right;text-align:right;margin-bottom:4px;}
+span .floatright input {width:3em;text-align:right;}
+#qptotal {width:5em;border:none}
+
+#qp-widget table {margin-bottom: 10px;}
+#qp-widget td {border-top: 1px solid #005F6B;padding: 5px 10px 5px 0;max-width: 400px;vertical-align:top;}
+#qp-widget td b {color: #005F6B;}
+#qp-widget th {padding: 5px 10px 5px 0;max-width: 400px;text-align: left;color: #005F6B;}
+
+div.rangeslider, div.rangeslider__fill {
+  background: #e6e6e6;
+  display: block;
+  height: 2em;
+  width: 100%;
+  -webkit-box-shadow: 0px 2px 2px rgba(255, 255, 255, 0.25), inset 0px 1px 3px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0px 2px 2px rgba(255, 255, 255, 0.25), inset 0px 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 2px 2px rgba(255, 255, 255, 0.25), inset 0px 1px 3px rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 1em;
+  -moz-border-radius: 1em;
+  -ms-border-radius: 1em;
+  -o-border-radius: 1em;
+  border-radius: 1em;
+}
+
+div.rangeslider {
+    position: relative;
+}
+
+div.rangeslider--disabled {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
+  opacity: 0.4;
+}
+
+div.rangeslider__fill {
+  background: #00ff00;
+  position: absolute;
+  top: 0;
+}
+
+div.rangeslider__handle {
+  background: white;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  display: inline-block;
+  width: 3em;
+  height: 3em;
+  position: absolute;
+  top: -0.5em;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(100%, rgba(0, 0, 0, 0.1)));
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.1));
+  background-image: -moz-linear-gradient(rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.1));
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.1));
+  background-image: linear-gradient(rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.1));
+  -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+  border-radius: 50%;
+}
+
+div.rangeslider__handle:active {
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, rgba(0, 0, 0, 0.1)), color-stop(100%, rgba(0, 0, 0, 0.12)));
+  background-image: -webkit-linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.12));
+  background-image: -moz-linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.12));
+  background-image: -o-linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.12));
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.12));
+}
+
+input[type="range"]:focus + .rangeslider .rangeslider__handle {
+  -webkit-box-shadow: 0 0 8px rgba(255, 0, 255, 0.9);
+  -moz-box-shadow: 0 0 8px rgba(255, 0, 255, 0.9);
+  box-shadow: 0 0 8px rgba(255, 0, 255, 0.9);
+}
+.qp-slideroutput{
+    margin-top: 0.5em;
+    text-align:center;
+    }
+.qp-slideroutput .qp-sliderleft {
+    float: left;
+    width:33.33333%;
+    text-align:left;
+}
+.qp-slideroutput .qp-slidercenter {
+    float: left;
+    width:33.33333%;
+    text-align:center;
+}
+.qp-slideroutput .qp-sliderright {
+    float: left;
+    width:33.33333%;
+    text-align:right;
+}
+.qp-slideroutput .qp-outputcenter {
+    text-align:center;
+    width:100%;
+}
+
+.qp-loading, .qp-processing-form, .qp-validating-form {
+	line-height: 25px;
+	display: none;
+}
+
+.qp_payment_modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	text-align: center;
+	z-index: 10001;
+	display: none;
+}
+.qp_payment_modal_bg {
+	background-color: rgba(0,0,0,.5);
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	z-index: 10002
+}
+.qp_payment_modal_content {
+	position: absolute;
+	
+	top: 50%;
+	left: 50%;
+	
+	width: 200px;
+	height: 220px;
+	margin-top: -110px;	
+	margin-left: -100px;
+	
+	background-color: white;
+	border: 2px solid black;
+	z-index: 10003;
+	
+	border-radius: 15px;
+	display: inline-block;
+	
+	-webkit-box-shadow: 5px 5px 60px -9px rgba(0,0,0,0.75);
+	-moz-box-shadow: 5px 5px 60px -9px rgba(0,0,0,0.75);
+	box-shadow: 5px 5px 60px -9px rgba(0,0,0,0.75);
+}
+
+.qp_payment_modal_content a {
+	position: absolute;
+	float: right;
+	top: 5px;
+	right: 5px;
+	z-index: 10004;
+	width: 20px;
+	height: 20px;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	background-color: black;
+	color: white;
+	text-decoration:none;
+	transition: all .25s ease-in-out;
+	-moz-transition: all .25s ease-in-out;
+	-webkit-transition: all .25s ease-in-out;
+	line-height: 17px;
+	font-size: 14px;
+	font-family: Verdana;
+}
+.qp_payment_modal_content a:hover {
+	background-color: #444;
+	color: white;
+}
+.qp_payment_modal_content .qp_payment_modal_button, .qp_payment_modal_content .qp_payment_modal_text  {
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+	left: 10px;
+	text-align: center;
+}
+
+.qp_payment_modal_content .qp_payment_modal_loading {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	left: 10px;
+	background: url('loading.gif') no-repeat top center;
+	padding-top:154px;
+	
+	transition: background .25s ease-in-out;
+	-moz-transition: background .25s ease-in-out;
+	-webkit-transition: background .25s ease-in-out;
+}
+
+.qp_payment_modal_content .qp_payment_modal_loading.done {
+	background-image: url('done.png');
+}
+.qp_payment_modal_content .qp_payment_modal_button input { width: 100%; height: 30px; }
+.qp_payment_modal_content .qp_payment_modal_button { 
+	display: none; 
+	transition: all .25s ease-in-out;
+	-moz-transition: all .25s ease-in-out;
+	-webkit-transition: all .25s ease-in-out;
+}
