@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: MultiPay
-Plugin URI: http://quick-plugins.com/multipay/
+Plugin URI: https://wordpress.org/plugins/multipay/
 Description: A simple, single form payment gateway that connects to a range of vendors such as PayPal, Stripe and WorldPay. Let you customers choose how they pay.
 Version: 1.2
 Author: etalented
@@ -1649,11 +1649,11 @@ function qp_upgrade_ipn() {
         $email = get_option('admin_email');
         $qp_setup = qp_get_stored_setup();
         $email  = bloginfo('adminemail');
-        $headers = "From: Quick Plugins <mail@quick-plugins.com>\r\n"
+        $headers = "From: Etalented Plugins <plugins@etalented.co.uk>\r\n"
 . "MIME-Version: 1.0\r\n"
 . "Content-Type: text/html; charset=\"utf-8\"\r\n";	
         $message = '<html><p>Thank for upgrading. Your authorisation key is:</p><p>'.$qppkey['key'].'</p></html>';
-        wp_mail($email,'Quick Plugins Authorisation Key',$message,$headers);
+        wp_mail($email,'MultiPay Plugin Authorisation Key',$message,$headers);
     }
     exit();
 }

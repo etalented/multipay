@@ -1648,10 +1648,9 @@ function qp_upgrade () {
         $qppkey['key'] = md5(mt_rand());
         update_option('qpp_key', $qppkey);
         $form = '<h2>'.__('Waiting for PayPal...','multipay').'</h2><form action="'.$paypalurl.'" method="post" name="qpupgrade" id="qpupgrade">
-        <input type="hidden" name="item_name" value="Quick Plugins Upgrade"/>
+        <input type="hidden" name="item_name" value="Multipay Plugin Upgrade"/>
         <input type="hidden" name="upload" value="1">
-        <input type="hidden" name="business" value="mail@quick-plugins.com">
-        <input type="hidden" name="return" value="https://quick-plugins.com/quick-paypal-payments/quick-paypal-payments-authorisation-key/?key='.$qppkey['key'].'&email='.get_option('admin_email').'">
+        <input type="hidden" name="business" value="hello@etalented.co.uk">
         <input type="hidden" name="cancel_return" value="'.$page_url.'">
         <input type="hidden" name="currency_code" value="USD">
         <input type="hidden" name="cmd" value="_xclick">
@@ -1667,11 +1666,11 @@ function qp_upgrade () {
     if( isset( $_POST['Lost']) && check_admin_referer("save_qp")) {
         $email = get_option('admin_email');
         $qppkey = get_option('qpp_key');
-        $headers = "From: Quick Plugins <mail@quick-plugins.com>\r\n"
+        $headers = "From: Etalented Plugins <plugins@etalented.co.uk>\r\n"
 . "MIME-Version: 1.0\r\n"
 . "Content-Type: text/html; charset=\"utf-8\"\r\n";	
-        $message = '<html><p>'.__('Your Quick Plugins authorisation key is:','multipay').'</p><p>'.$qppkey['key'].'</p></html>';
-        wp_mail($email,'Quick Plugins Authorisation Key',$message,$headers);
+        $message = '<html><p>'.__('Your Multipay plugin authorisation key is:','multipay').'</p><p>'.$qppkey['key'].'</p></html>';
+        wp_mail($email,'Multipay Plugin Authorisation Key',$message,$headers);
         qp_admin_notice(__('Your auth key has been sent to','multipay').' '.$email);
     }
 
@@ -1803,7 +1802,7 @@ function qp_admin_pages() {
 
 function qp_plugin_row_meta( $links, $file = '' ){
     if( false !== strpos($file , '/multipay.php') ){
-        $new_links = array('<a href="http://quick-plugins.com/multipay/"><strong>'.__('Help and Support', 'multipay').'</strong></a>','<a href="'.get_admin_url().'options-general.php?page=multipay/settings.php&tab=upgrade"><strong>'.__('Upgrade to Pro', 'multipay').'</strong></a>');
+        $new_links = array('<a href="https://wordpress.org/support/plugin/multipay"><strong>'.__('Help and Support', 'multipay').'</strong></a>','<a href="'.get_admin_url().'options-general.php?page=multipay/settings.php&tab=upgrade"><strong>'.__('Upgrade to Pro', 'multipay').'</strong></a>');
 $links = array_merge( $links, $new_links );  
 } 
     return $links;
