@@ -3,7 +3,7 @@
 Plugin Name: MultiPay
 Plugin URI: https://wordpress.org/plugins/multipay/
 Description: A simple, single form payment gateway that connects to a range of vendors such as PayPal, Stripe and WorldPay. Let you customers choose how they pay.
-Version: 1.2
+Version: 1.4
 Author: etalented
 Author URI: https://etalented.co.uk/
 Text-domain: multipay
@@ -275,11 +275,15 @@ function qp_formulate_v($atts,&$v, &$form = 'default', &$amount = '', &$id = '',
         if (isset($d['otheramount']) && isset($d['use_other_amount'])) {
 			if (strtolower($d['use_other_amount']) == 'true') $d['amount'] = $d['otheramount'];
 		} 
-        if ($qp['use_options'] && $qp['optionselector'] == 'optionscheckbox') {
-            $checks ='';
-            $arr = explode(",",$qp['optionvalues']);
-            foreach ($arr as $key) if ($d['option1_' . str_replace(' ','',$key)]) $checks .= $key . ', ';
-            $d['option1'] = rtrim( $checks , ', ' );
+        if ($qp['use_options']) {
+            if ($qp['optionselector'] == 'optionscheckbox') {
+                $checks ='';
+                $arr = explode(",",$qp['optionvalues']);
+                foreach ($arr as $key) if ($d['option1_' . str_replace(' ','',$key)]) $checks .= $key . ', ';
+                $v['option1'] = rtrim( $checks , ', ' );
+            } else {
+                $v['option1'] = $d['option1'];
+            }
         }
 
         $arr = array(
@@ -361,8 +365,8 @@ function qp_display_success($form, $tid, $data) {
 			if ($message[$i]['custom'] == $custom && $message[$i]['reference']) {
 				$message[$i]['custom'] = 'Paid';
                 $message[$i]['tid'] =  $tid;
-				$auto = qp_get_stored_autoresponder($item);
-				$send = qp_get_stored_send($item);
+				$auto = qp_get_stored_autoresponder($form);
+				$send = qp_get_stored_send($form);
 				qp_check_coupon($message[$i]['coupon'],$item);
 				$values = array(
 					'reference' => $message[$i]['reference'],
@@ -737,11 +741,12 @@ function qp_display_form($values, $errors, $form, $attr = '') {
                     } else {
                         if ($values['explodepay']) {
                             $ref = explode(",",$values['amount']);
-                            if($qp['selector'] == 'dropdown') {
+                            if($qp['amtselector'] == 'amtdropdown') {
                                 // add combobox script
                                 if ($qp['combobox']) {
 									array_push($ref,$qp['comboboxword']);
-									$content .= qp_dropdown($ref,$values,'amount','<div id="otheramount"><input type="text" label="'.$qp['comboboxlabel'].'" onfocus="qpclear(this, \'' . $qp['comboboxlabel'] . '\')" onblur="qprecall(this, \'' . $qp['comboboxlabel'] . '\' )" value="'.$values['otheramount'].'" name="otheramount" style="display: none;" /><input type="hidden" name="use_other_amount" value="false" /></div>');
+                                    $content .= qp_dropdown($ref,$values,'amount');
+                                    $content .= '<div id="otheramount"><input type="text" label="'.$qp['comboboxlabel'].'" onfocus="qpclear(this, \'' . $qp['comboboxlabel'] . '\')" onblur="qprecall(this, \'' . $qp['comboboxlabel'] . '\' )" value="'.$values['otheramount'].'" name="otheramount" style="display: none;" /><input type="hidden" name="use_other_amount" value="false" /></div>';
                                 } else {
 									$content .= qp_dropdown($ref,$values,'amount');
 								}
@@ -756,7 +761,7 @@ function qp_display_form($values, $errors, $form, $attr = '') {
 									$checked='';
                                 }
                                 if ($qp['combobox']) {
-                            $content .=  '<input type="radio" id="qptiddles" style="margin:0; padding: 0; border:none;width:auto;" name="amount" value="otheramount" ' . $checked . '>&nbsp;<input type="text" style="width:80%;" value ="'.$values['otheramount'].'" name="otheramount" onfocus="qpclear(this, \'' . $qp['comboboxlabel'] . '\')" onblur="qprecall(this, \'' . $qp['comboboxlabel'] . '\' )" /><input type="hidden" name="use_other_amount" value="false" />';
+                                    $content .=  '<input type="radio" id="qptiddles" style="margin:0; padding: 0; border:none;width:auto;" name="amount" value="otheramount" ' . $checked . '> '.$qp['comboboxword'].'<input type="text" style="width:80%;" value ="'.$values['otheramount'].'" name="otheramount" onfocus="qpclear(this, \'' . $qp['comboboxlabel'] . '\')" onblur="qprecall(this, \'' . $qp['comboboxlabel'] . '\' )" /><input type="hidden" name="use_other_amount" value="false" />';
                                 }
                             
                             }
@@ -781,8 +786,8 @@ function qp_display_form($values, $errors, $form, $attr = '') {
                     foreach ($arr as $item) {
                         $checked = '';
                         if ($values['option1'] == $item) $checked = 'checked';
-                        if ($item === reset($arr)) $content .= '<input type="radio" style="margin:0; padding: 0; border: none" name="option1" value="' .  $item . '" id="' .  $item . '" checked><label for="' .  $item . '"> ' .  $item . '</label>'.$br;
-                        else $content .=  '<input type="radio" style="margin:0; padding: 0; border: none" name="option1" value="' .  $item . '" id="' .  $item . '" ' . $checked . '><label for="' .  $item . '"> ' .  $item . '</label>'.$br;
+                        if ($item === reset($arr)) $content .= '<label><input type="radio" style="margin:0; padding: 0; border: none" name="option1" value="' .  $item . '" id="' .  $item . '" checked> ' .  $item . '</label>'.$br;
+                        else $content .=  '<label><input type="radio" style="margin:0; padding: 0; border: none" name="option1" value="' .  $item . '" id="' .  $item . '" ' . $checked . '> ' .  $item . '</label>'.$br;
                     }
                     $content .= '</p>';
                 }
@@ -847,7 +852,7 @@ function qp_display_form($values, $errors, $form, $attr = '') {
             case 'address':
             if ($qp['useaddress']) {
                 $content .= '<p>' . $qp['addressblurb'] . '</p>';
-                $arr = array('firstname','lastname','address1','address2','city','state','zip','country','night_phone_b');
+                $arr = array('firstname','lastname','email','address1','address2','city','state','zip','country','night_phone_b');
                 foreach($arr as $item)
                     if ($address[$item]) {
                     $required = ($address['r'.$item] && !$errors[$item] ? ' class="required" ' : '');
@@ -993,7 +998,9 @@ function qp_verify_form(&$v,&$errors,$form) {
     $address = qp_get_stored_address($form);
     $check = preg_replace ( '/[^.,0-9]/', '', $v['amount']);
     $arr = array('amount','reference','quantity','stock','email','yourmessage');
-	
+    
+    //die(json_encode(compact('qp', 'v')));
+    
     foreach ($arr as $item) $v[$item] = filter_var($v[$item], FILTER_SANITIZE_STRING);
 	
 	if ($qp['use_quantity']) {
@@ -1027,7 +1034,7 @@ function qp_verify_form(&$v,&$errors,$form) {
     if($qp['useterms'] && !$v['termschecked']) $errors['useterms'] = 'error';
     
     if($qp['useaddress']) {
-        $arr = array('firstname','lastname','address1','address2','city','state','zip','country','night_phone_b');
+        $arr = array('firstname','lastname', 'email','address1','address2','city','state','zip','country','night_phone_b');
         foreach ($arr as $item) {
             $v[$item] = filter_var($v[$item], FILTER_SANITIZE_STRING);
             if ($address['r'.$item] && ($v[$item] == $address[$item] || empty($v[$item]))) $errors[$item] = 'error';
@@ -1039,6 +1046,29 @@ function qp_verify_form(&$v,&$errors,$form) {
     
     if ($qp['use_message'] && $qp['ruse_message'] && ($v['yourmessage'] == $qp['messagelabel'] || empty($v['yourmessage'])))
         $errors['use_message'] = 'error';
+        
+    if ($qp['useemail'] && $qp['ruseemail'] && ($v['email'] == $qp['emailblurb'] || empty($v['email'])))
+        $errors['email'] = 'error';
+        
+    if ($qp['ruse_options']) {
+        $hasOptions = false;
+        $keys = array_keys($v);
+        foreach ($keys as $k) {
+            if (strpos($k, 'option1') === 0) {
+                $hasOptions = true;
+                break;
+            }
+        }
+        
+        if (!$hasOptions) {
+            $optionValues = explode(',', $qp['optionvalues']);
+            foreach ($optionValues as $item) {
+                $errors['option1_'.str_replace(' ','',$item)] = 'error';
+            }
+            $errors['option1'] = 'error';
+        }
+    }
+        
     $errors = array_filter($errors);
     return (count($errors) == 0);
 }
@@ -1106,7 +1136,7 @@ function qp_process_form($values,$form,$module, $qp_key) {
     
     update_option('qp_messages'.$form,$qp_messages);
 
-    if (isset($send['mailchimpuser']) && $send['mailchimpuser'] && $values['email'])
+    if (isset($send['mailchimpregion']) && isset($send['mailchimpuser']) && $send['mailchimpregion'] && $send['mailchimpuser'] && $values['email'])
         $content .= qp_mailchimp($values,$send);
 
 	return $content;
@@ -1247,9 +1277,9 @@ function qp_generate_css() {
     
     $couponbutton = ".qp-style #couponsubmit, .qp-style #couponsubmit:hover{".$submitwidth."color:".$style['coupon-colour'].";background:".$style['coupon-background'].";border:".$style['submit-border'].";".$submitfont.";font-size: inherit;margin: 3px 0px 7px;padding: 6px;text-align:center;}";
     if ($style['border']<>'none') $border =".qp-style #".$style['border'].", .qp_payment_modal_content {border:".$style['form-border'].";}";
-    if ($style['background'] == 'white') {$bg = "background:#FFF";$background = ".qp-style div, .qp_payment_modal_content {background:#FFF;}";}
-    if ($style['background'] == 'color') {$background = ".qp-style div, .qp_payment_modal_content {background:".$style['backgroundhex'].";}";$bg = "background:".$style['backgroundhex'].";";}
-    if ($style['backgroundimage']) $background = ".qp-style #".$style['border']." {background: url('".$style['backgroundimage']."');}";
+    if ($style['background'] == 'white') {$bg = "background-color:#FFF";$background = ".qp-style div, .qp_payment_modal_content {background-color:#FFF;}";}
+    if ($style['background'] == 'color') {$background = ".qp-style div, .qp_payment_modal_content {background-color:".$style['backgroundhex'].";}";$bg = "background-color:".$style['backgroundhex'].";";}
+    if ($style['backgroundimage']) $background = ".qp-style #".$style['border']." {background-image: url('".$style['backgroundimage']."');background-size: cover;background-position:center;}";
     $formwidth = preg_split('#(?<=\d)(?=[a-z%])#i', $style['width']);
     if (!isset($formwidth[1])) $formwidth[1] = 'px';
     if ($style['widthtype'] == 'pixel') $width = $formwidth[0].$formwidth[1];
@@ -1336,7 +1366,7 @@ function qp_messagetable ($form,$email) {
         }
     }
     if ($messageoptions['showaddress']) {
-        $arr = array('firstname','lastname','address1','address2','city','state','zip','country','night_phone_b');
+        $arr = array('firstname','lastname','email','address1','address2','city','state','zip','country','night_phone_b');
         foreach ($arr as $item) $dashboard .= '<th style="text-align:left">'.$address[$item].'</th>';
     }
     $dashboard .= '<th>'.__('Payment','multipay').'</th>
@@ -1391,8 +1421,8 @@ function qp_messagecontent ($form,$value,$options,$c,$messageoptions,$address,$a
                 if ($options['stocklabel'] == $value['stocklabel']) $value['stocklabel']='';
                 $content .= '<td>'.$value['stocklabel'].'</td>';}break;
             case 'options': if ($options['use_options']) {
-                if ($options['optionlabel'] == $value['optionlabel']) $value['optionlabel']='';
-                $content .= '<td>'.$value['optionlabel'].'</td>';}break;
+                if ($options['optionlabel'] == $value['optionlabel']) $value['option1']='';
+                $content .= '<td>'.$value['option1'].'</td>';}break;
             case 'coupon': if ($options['usecoupon']) {
                 if ($options['couponblurb'] == $value['couponblurb']) $value['couponblurb']='';
                 $content .= '<td>'.$value['couponblurb'].'</td>';}break;
@@ -1408,7 +1438,7 @@ function qp_messagecontent ($form,$value,$options,$c,$messageoptions,$address,$a
         }
     }
     if ($messageoptions['showaddress']) {
-        $arr = array('firstname','lastname','address1','address2','city','state','zip','country','night_phone_b');
+        $arr = array('firstname','lastname','email','address1','address2','city','state','zip','country','night_phone_b');
         foreach ($arr as $item) {
             if ($value[$item] == $address[$item]) $value[$item] = '';
             $content .= '<td>'.$value[$item].'</td>';
@@ -1563,15 +1593,25 @@ function qp_create_user($values) {
 }
         
 function qp_mailchimp($values,$send) {
-    $content = '<form action="http://mailchimp.us8.list-manage.com/subscribe/post" method="POST" id="mailchimpsubmit">
-    <input type="hidden" name="u" value="'.$send['mailchimpuser'].'">
-    <input type="hidden" name="id" value="'.$send['mailchimpid'].'">
-    <input type="hidden" name="MERGE0" id="MERGE0" value='.$values['email'].'>
-    <input type="hidden" name="FNAME" id="FNAME" value='.$values['firstname'].'>
-    <input type="hidden" name="LNAME" id="LNAME" value='.$values['lastname'].'>
-    </form>
-    <script language="JavaScript">document.getElementById("mailchimpsubmit").submit();</script>';
-    return $content;
+    $http_query = http_build_query([
+        'u' => $send['mailchimpuser'],
+        'id' => $send['mailchimpid'],
+        'EMAIL' => $values['email'],
+        'FNAME' => $values['firstname'],
+        'LNAME' => $values['lastname'],
+    ]);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'http://mailchimp.'.$send['mailchimpregion'].'.list-manage.com/subscribe/post');
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $http_query);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        "content-type: application/x-www-form-urlencoded"
+    ));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_exec($ch);
+    curl_close($ch);
+    return '';
 }
 
 add_action( 'template_redirect', 'qp_upgrade_ipn' );

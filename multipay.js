@@ -90,7 +90,23 @@ function qp_do_validation(form,module,success,error) {
 		Show modal
 	*/
 	
-	var $ = jQuery, fd = $(form).serialize();
+	var $ = jQuery
+	
+	$('input, textarea, select', form).each(function () {
+		var ele = $(this)[0];
+		if (ele.onfocus && !$(this).attr('data-changed')) {
+			ele.onfocus.call(ele);
+		}
+	});
+	
+	var fd = $(form).serialize();
+	
+	$('input, textarea, select', form).each(function () {
+		var ele = $(this)[0];
+		if (ele.onblur && !$(this).attr('data-changed')) {
+			ele.onblur.call(ele);
+		}
+	});
 	
 	$('.qp_payment_modal_button input').off();
 	
@@ -168,7 +184,13 @@ function qp_handleValidationResponse(e,f) {
 			for (i = 0; i < data.errors.length; i++) {
 				error = data.errors[i];
 				element = f.find('[name='+error.name+']');
-				if (element.length) element.css({'border':'1px solid '+data.error_color});
+				if (element.length) {
+					if (error.name.indexOf('option1') === 0) {
+						element = element.parent();
+					}
+					
+					element.css({'border':'1px solid '+data.error_color});
+				}
 			}
 			
 			/*
@@ -207,6 +229,14 @@ jQuery(document).ready(function() {
 		Scroll to .qp-complete 
 	*/
 	qp_show_form($('.qp-complete'));
+	
+	$('input, textarea, select', $('.qp-style form')).change(function() {
+		if ($(this).val().length) {
+			$(this).attr('data-changed', true);
+		} else {
+			$(this).attr('data-changed', false);
+		}
+	})
 	
 	/*
 		Add in some catches to detect which button was clicked in a form!

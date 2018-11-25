@@ -4,7 +4,7 @@ Contributors: etalented
 Tags: paypal, stripe, worldpay, payment form, ecommence
 Requires at least: 4.0
 Tested up to: 4.9.8
-Stable tag: 1.3
+Stable tag: 1.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -63,6 +63,23 @@ Upgrade to Pro and at the bottom of the dashboard menu is a link called 'MultiPa
 If it all goes wrong, just reinstall the plugin and start again. If you need help then please use the Support Forum.
 
 == Changelog ==
+
+= 1.4 =
+*   Added explanation for maximum quantity
+*   Removed "include postage and processing in the amount to pay" setting
+*   Removed Google onClick setting
+*   Removed currencies field
+*   Fixed changing email address for confirmation message for non-upgrade version
+*   Fixed payment methods will go to thank you or cancelled URLs
+*   Fixed submit button position and size
+*   Fixed background image and colour display
+*   Fixed display of form borders
+*   Fixed form width options
+*   Fixed options field display and required
+*   Fixed amount field display
+*   Fixed reference field display
+*   Fixed email address required
+*   Fixed issue with activation of multiple fields in admin
 
 = 1.3 =
 *   Upgrade update

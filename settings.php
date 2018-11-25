@@ -251,6 +251,7 @@ function qp_form_options($form) {
             'fixedstock',
             'stocklabel',
             'use_options',
+            'ruse_options',
             'optionlabel',
             'optionvalues',
             'optionselector',
@@ -272,6 +273,7 @@ function qp_form_options($form) {
             'useaddress',
             'addressblurb',
             'useemail',
+            'ruseemail',
             'emailblurb',
             'use_message',
             'ruse_message',
@@ -363,10 +365,11 @@ function qp_form_options($form) {
             $input = 'inputreference';
             $checked = 'checked';
             $required = '';
+            $refselector = $qp['refselector'];
             $options = '<p><input type="checkbox" name="fixedreference" ' . $qp['fixedreference'] . ' value="checked" />&nbsp;Display as a pre-set reference</p>
             <p class="description">Use commas to seperate options: Red,Green, Blue</p>
             <p class="description">Use semi-colons to combine with amount: Red;$5,Green;$10,Blue;£20</span></p>
-            <p>Options Selector: <input type="radio" name="refselector" value="refradio" ' . $refradio . ' /> Radio <input type="radio" name="refselector" value="refdropdown" ' . $refdropdown . ' /> Dropdown <input type="radio" name="refselector" value="refnone" ' . $refnone . ' /> Inline</p>';
+            <p>Options Selector: <input type="radio" name="refselector" value="refradio" ' . (($refselector == 'refradio') ? 'checked' : '') . ' /> Radio <input type="radio" name="refselector" value="refdropdown" ' . (($refselector == 'refdropdown') ? 'checked' : '') . ' /> Dropdown</p>';
             break;
             case 'amount': 
             $check = '&nbsp;';
@@ -374,21 +377,14 @@ function qp_form_options($form) {
             $input = 'inputamount';
             $checked = 'checked';
             $required = '';
+            $amtselector = $qp['amtselector'];
             $options = '<p><input type="checkbox" name="allow_amount" ' . $qp['allow_amount'] . ' value="checked" /> Do not validate (use default amount value)</p>
             <p><input type="checkbox" name="fixedamount" ' . $qp['fixedamount'] . ' value="checked" /> Display as a pre-set amount</p>
             <p class="description">Use commas to create an options list: £10,£20,£30</p>
-            <p>Options Selector: <input type="radio" name="amtselector" value="amtradio" ' . $amtradio . ' /> Radio <input type="radio" name="amtselector" value="amtdropdown" ' . $amtdropdown . ' /> Dropdown <input type="radio" name="amtselector" value="amtnone" ' . $amtnone . ' /> Inline </p>
+            <p>Options Selector: <input type="radio" name="amtselector" value="amtradio" ' . (($amtselector == 'amtradio') ? 'checked' : '') . ' /> Radio <input type="radio" name="amtselector" value="amtdropdown" ' . (($amtselector == 'amtdropdown') ? 'checked' : '') . ' /> Dropdown</p>
             <p><input type="checkbox" name="combobox" ' . $qp['combobox'] . ' value="checked" /> Add input field to dropdown<br>
             Caption:&nbsp;<input type="text" style="width:7em;" name="comboboxword" value="' . $qp['comboboxword'] . '" /><br>
             Instruction:&nbsp;<input type="text" style="width:10em;" name="comboboxlabel" value="' . $qp['comboboxlabel'] . '" /></p>';
-            break;
-            case 'currency': 
-            $check = '<input type="checkbox"   name="use_currency" ' . $qp['use_currency'] . ' value="checked" />';
-            $type = 'Currencies';
-            $input = 'currencylabel';
-            $checked = $qp['use_currency'];
-            $required = '';
-            $options = '<p class="description">Enter multiple currencies. Seperate with a comma.</p>';
             break;
             case 'quantity': 
             $check = '<input type="checkbox"   name="use_quantity" ' . $qp['use_quantity'] . ' value="checked" />';
@@ -398,7 +394,8 @@ function qp_form_options($form) {
             $required = '';
             $options = '<p><input type="checkbox" name="quantitymax" ' . $qp['quantitymax'] . ' value="checked" /> Display and validate a maximum quantity</p>
             <p class="description">Message that will display on the form:</p>
-            <p><input type="text" name="quantitymaxblurb" value="' . $qp['quantitymaxblurb'] . '" /></p>';
+            <p><input type="text" name="quantitymaxblurb" value="' . $qp['quantitymaxblurb'] . '" /></p>
+            <p class="description">E.g. "maxiumum of 10", where 10 is the maximum quantity</p>';
             break;
             case 'stock': 
             $check = '<input type="checkbox" name="use_stock" ' . $qp['use_stock'] . ' value="checked" />';
@@ -413,9 +410,11 @@ function qp_form_options($form) {
             $type = 'Options';
             $input = 'optionlabel';
             $checked = $qp['use_options'];
+            $required = '<input type="checkbox" name="ruse_options" ' . $qp['ruse_options'] . ' value="checked" />';
+            $optionselector = $qp['optionselector'];
             $options = '<p class="description">Options (separate with a comma):</p>
             <p><textarea  name="optionvalues" label="Radio" rows="2">' . $qp['optionvalues'] . '</textarea></p>
-            <p>Options Selector: <input type="radio" name="optionselector" value="optionsradio" ' . $optionsradio . ' /> Radio <input type="radio" name="optionselector" value="optionscheckbox" ' . $optionscheckbox . ' /> Checkbox <input type="radio" name="optionselector" value="optionsdropdown" ' . $optionsdropdown . ' /> Dropdown</p>
+            <p>Options Selector: <input type="radio" name="optionselector" value="optionsradio" ' . (($optionselector == 'optionsradio') ? 'checked' : '') . ' /> Radio <input type="radio" name="optionselector" value="optionscheckbox" ' . (($optionselector == 'optionscheckbox') ? 'checked' : '') . ' /> Checkbox <input type="radio" name="optionselector" value="optionsdropdown" ' . (($optionselector == 'optionsdropdown') ? 'checked' : '') . ' /> Dropdown</p>
             <p><input type="checkbox" name="inline_options" ' . $qp['inline_options'] . ' value="checked" />&nbsp;Display inline radio and checkbox fields</p>'; 
             break;
             case 'postage': 
@@ -424,9 +423,10 @@ function qp_form_options($form) {
             $input = 'postageblurb';
             $checked = $qp['usepostage'];
             $required = '';
+            $postagetype = $qp['postagetype'];
             $options = '<p class="description">Post and Packing charge type:</p>
-            <p><input type="radio" name="postagetype" value="postagepercent" ' . $postagepercent . ' /> Percentage of the total: <input type="text" style="width:4em;padding:2px" label="postagepercent" name="postagepercent" value="' . $qp['postagepercent'] . '" /> %</p>
-            <p><input type="radio" name="postagetype" value="postagefixed" ' . $postagefixed . ' /> Fixed amount: <input type="text" style="width:4em;padding:2px" label="postagefixed" name="postagefixed" value="' . $qp['postagefixed'] . '" /> '.$currency[$form].'</p>'; 
+            <p><input type="radio" name="postagetype" value="postagepercent" ' . (($postagetype == 'postagepercent') ? 'checked' : '') . ' /> Percentage of the total: <input type="text" style="width:4em;padding:2px" label="postagepercent" name="postagepercent" value="' . $qp['postagepercent'] . '" /> %</p>
+            <p><input type="radio" name="postagetype" value="postagefixed" ' . (($postagetype == 'postagefixed') ? 'checked' : '') . ' /> Fixed amount: <input type="text" style="width:4em;padding:2px" label="postagefixed" name="postagefixed" value="' . $qp['postagefixed'] . '" /> '.$currency[$form].'</p>'; 
             break;
             case 'processing': 
             $check = '<input type="checkbox" name="useprocess" ' . $qp['useprocess'] . ' value="checked" />';
@@ -434,9 +434,10 @@ function qp_form_options($form) {
             $input = 'processblurb';
             $checked = $qp['useprocess'];
             $required = '';
+            $processtype = $qp['processtype'];
             $options = '<p class="description">Payment charge type:</p>
-            <p><input type="radio" name="processtype" value="processpercent" ' . $processpercent . ' /> Percentage of the total: <input type="text" style="width:4em;padding:2px" label="processpercent" name="processpercent" value="' . $qp['processpercent'] . '" /> %</p>
-            <p><input type="radio" name="processtype" value="processfixed" ' . $processfixed . ' /> Fixed amount: <input type="text" style="width:4em;padding:2px" label="processfixed" name="processfixed" value="' . $qp['processfixed'] . '" /> '.$currency[$form].'</p>'; 
+            <p><input type="radio" name="processtype" value="processpercent" ' . (($processtype == 'processpercent') ? 'checked' : '') . ' /> Percentage of the total: <input type="text" style="width:4em;padding:2px" label="processpercent" name="processpercent" value="' . $qp['processpercent'] . '" /> %</p>
+            <p><input type="radio" name="processtype" value="processfixed" ' . (($processtype == 'processfixed') ? 'checked' : '') . ' /> Fixed amount: <input type="text" style="width:4em;padding:2px" label="processfixed" name="processfixed" value="' . $qp['processfixed'] . '" /> '.$currency[$form].'</p>'; 
             break;
             case 'coupon': 
             if ($qppkey['authorised']) {
@@ -454,6 +455,9 @@ function qp_form_options($form) {
                 $type = 'Coupons';
                 $input = '';
                 $options = '<p>Coupons are only available in the Pro Version</p>';
+                $check = '';
+                $required = '';
+                $checked = false;
             } 
             break;
             case 'additionalinfo': 
@@ -486,6 +490,9 @@ function qp_form_options($form) {
                 $type = 'Range Slider';
                 $input = '';
                 $options = '<p>The rangeslider option is only available in the Pro Version</p>';
+                $check = '';
+                $required = '';
+                $checked = false;
             }
             break;
             case 'email': 
@@ -516,6 +523,9 @@ function qp_form_options($form) {
                 $type = 'Add datepicker';
                 $input = '';
                 $options = '<p>The datepicker option is only available in the Pro Version</p>';
+                $check = '';
+                $required = '';
+                $checked = false;
             }   
             break;
             case 'terms': 
@@ -547,6 +557,9 @@ function qp_form_options($form) {
                 $type = 'Live totals';
                 $input = '';
                 $options = '<p>Live totals are only available in the Pro Version</p>';
+                $check = '';
+                $required = '';
+                $checked = false;
             } 
             break;
         }
@@ -578,6 +591,10 @@ function qp_form_options($form) {
     $content .= qp_loop($args);
     $content .='</div></div>';
     echo $content;
+}
+
+function qp_checked($value, $eq = null) {
+    return (($value && $eq === null) || $value == $eq) ? 'checked' : '';
 }
 
 // Styles
@@ -661,19 +678,19 @@ function qp_styles($form) {
     <td colspan="2"><h2>'.__('Form Width','multipay').'</h2></td>
     </tr>
     <tr>
-    <td colspan="2"><input type="radio" name="widthtype" value="percent" ' . $percent . ' /> 100% (fill the available space)<br />
-    <input type="radio" name="widthtype" value="pixel" ' . $pixel . ' /> Pixel (fixed): <input type="text" style="width:4em" label="width" name="width" value="' . $style['width'] . '" /> use px, em or %. Default is px.</td>
+    <td colspan="2"><input type="radio" name="widthtype" value="percent" ' . $percent . ' '.qp_checked($style['widthtype'], 'percent').' /> 100% (fill the available space)<br />
+    <input type="radio" name="widthtype" value="pixel" ' . $pixel . ' '.qp_checked($style['widthtype'], 'pixel').' /> Pixel (fixed): <input type="text" style="width:4em" label="width" name="width" value="' . $style['width'] . '" /> use px, em or %. Default is px.</td>
     </tr>
     <tr>
     <td colspan="2"><h2>'.__('Form Border','multipay').'</h2></td
     </tr>
     <tr>
     <td width="20%">Type:</td>
-    <td><input type="radio" name="border" value="none" ' . $none . ' /> No border<br />
-    <input type="radio" name="border" value="plain" ' . $plain . ' /> Plain Border<br />
-    <input type="radio" name="border" value="rounded" ' . $rounded . ' /> Round Corners (Not IE8)<br />
-    <input type="radio" name="border" value="shadow" ' . $shadow . ' /> Shadowed Border(Not IE8)<br />
-    <input type="radio" name="border" value="roundshadow" ' . $roundshadow . ' /> Rounded Shadowed Border (Not IE8)</td>
+    <td><input type="radio" name="border" value="none" ' . $none . ' '.qp_checked($style['border'], 'none').' /> No border<br />
+    <input type="radio" name="border" value="plain" ' . $plain . ' '.qp_checked($style['border'], 'plain').' /> Plain Border<br />
+    <input type="radio" name="border" value="rounded" ' . $rounded . ' '.qp_checked($style['border'], 'rounded').'  /> Round Corners (Not IE8)<br />
+    <input type="radio" name="border" value="shadow" ' . $shadow . ' '.qp_checked($style['border'], 'shadow').' /> Shadowed Border(Not IE8)<br />
+    <input type="radio" name="border" value="roundshadow" ' . $roundshadow . ' '.qp_checked($style['border'], 'roundshadow').' /> Rounded Shadowed Border (Not IE8)</td>
     </tr>
     <tr>
     <td>Style:</td>
@@ -684,8 +701,8 @@ function qp_styles($form) {
     </tr>
     <tr>
     <td>Colour:</td>
-    <td><input type="radio" name="background" value="theme" ' . $theme . ' /> Same at theme<br />
-    <input style="margin-bottom:5px;" type="radio" name="background" value="color" ' . $color . ' />
+    <td><input type="radio" name="background" value="theme" ' . $theme . ' '.qp_checked($style['background'], 'theme').' /> Same at theme<br />
+    <input style="margin-bottom:5px;" type="radio" name="background" value="color" '.qp_checked($style['background'], 'color').' ' . $color . ' />
     <input type="text" class="qp-color" label="background" name="backgroundhex" value="' . $style['backgroundhex'] . '" /></td>
     </tr>
     <tr><td>Background<br>Image:</td>
@@ -732,8 +749,8 @@ function qp_styles($form) {
     </tr>
     <tr>
     <td>Corners: </td>
-    <td><input type="radio" name="corners" value="square" ' . $square . ' /> Square corners<br />
-    <input type="radio" name="corners" value="round" ' . $round . ' /> Rounded corners</td></tr>
+    <td><input type="radio" name="corners" value="square" ' . $square . ' '.qp_checked($style['corners'], 'square').' /> Square corners<br />
+    <input type="radio" name="corners" value="round" ' . $round . ' '.qp_checked($style['corners'], 'round').' /> Rounded corners</td></tr>
     <tr>
     <td style="vertical-align:top;">'.__('Margins and Padding', 'multipay').'</td>
     <td><span class="description">'.__('Set the margins and padding of each bit using CSS shortcodes', 'multipay').':</span><br><input type="text" label="line margin" name="line_margin" value="' . $style['line_margin'] . '" /></td>
@@ -783,11 +800,11 @@ function qp_styles($form) {
     <td><input type="text" label="submit-border" name="submit-border" value="' . $style['submit-border'] . '" /></td></tr>
     <tr>
     <td>Size:</td>
-    <td><input type="radio" name="submitwidth" value="submitpercent" ' . $submitpercent . ' /> Same width as the form<br />
-    <input type="radio" name="submitwidth" value="submitrandom" ' . $submitrandom . ' /> Same width as the button text</td></tr>
+    <td><input type="radio" name="submitwidth" value="submitpercent" ' . $submitpercent . ' '.qp_checked($style['submitwidth'], 'submitpercent').' /> Same width as the form<br />
+    <input type="radio" name="submitwidth" value="submitrandom" ' . $submitrandom . ' '.qp_checked($style['submitwidth'], 'submitrandom').' /> Same width as the button text</td></tr>
     <tr>
     <td>Position:</td>
-    <td><input type="radio" name="submitposition" value="submitleft" ' . $submitleft . ' /> Left <input type="radio" name="submitposition" value="submitmiddle" ' . $submitmiddle . ' /> Centre <input type="radio" name="submitposition" value="submitright" ' . $submitright . ' /> Right</td>
+    <td><input type="radio" name="submitposition" value="submitleft" ' . $submitleft . ' '.qp_checked($style['submitposition'], 'submitleft').' /> Left <input type="radio" name="submitposition" value="submitmiddle" ' . $submitmiddle . ' '.qp_checked($style['submitposition'], 'submitmiddle').' /> Centre <input type="radio" name="submitposition" value="submitright" ' . $submitright . ' '.qp_checked($style['submitposition'], 'submitright').' /> Right</td>
     </tr>';
     if ($qp['use_slider']) $content .= '<tr>
     <td colspan="2"><h2>'.__('Slider','multipay').'</h2></td>
@@ -846,7 +863,7 @@ function qp_send_page($form) {
             'cancelurl',
             'thanksurl',
             'combine',
-            'google_onclick',
+            'mailchimpregion',
             'mailchimpuser',
             'mailchimpid',
             'errortitle',
@@ -894,15 +911,12 @@ function qp_send_page($form) {
     <input type="text" style="width:100%" name="cancelurl" value="' . $send['cancelurl'] . '" />
     <p>'.__('URL of thank you page','multipay').'</p>
     <input type="text" style="width:100%" name="thanksurl" value="' . $send['thanksurl'] . '" />
-    <h2>'.__('Custom Settings','multipay').'</h2>
-    <p>'.__('<input type="checkbox" name="combine" ' . $send['combine'] . ' value="checked" /> Include Postage and Processing in the amount to pay.','multipay').'</p>
-    <h2>'.__('Google onClick Event','multipay').'</h2>
-    <p>'.__('Enter your onClick code here:','multipay').'</p>
-    <p>'.__('<input type="text" style="width:100%" name="google_onclick" value="' . $send['google_onclick'] . '" />','multipay').'</p>
 
     <h2>'.__('Add to Mailchimp','multipay').'</h2>
     <p>'.__('This will only work if you are collecting names and email addresses','multipay').'</p>
-    <p>'.__('Your mailchimp username:
+    <p>'.__('Your mailchimp region:
+    <input type="text" style="width:100%" name="mailchimpregion" value="' . $send['mailchimpregion'] . '" />','multipay').'</p>
+    <p>'.__('Your mailchimp user ID:
     <input type="text" style="width:100%" name="mailchimpuser" value="' . $send['mailchimpuser'] . '" />','multipay').'</p>
     <p>'.__('The mailchimp list ID:
     <input type="text" style="width:100%" name="mailchimpid" value="' . $send['mailchimpid'] . '" />','multipay').'</p>
@@ -1074,12 +1088,12 @@ function qp_autoresponce_page($form) {
     <td>The payment information (reference, quantity, options, stock number, amount)</td>
     </tr>
     </table>
-    <p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="paymentdetails"' . $auto['paymentdetails'] . ' value="checked" /> '.__('Add payment details to the message','multipay').'</p> 
-    <p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="'.__('Save Changes','multipay').'" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="'.__('Reset','multipay').'" onclick="return window.confirm( \'Are you sure you want to reset the autoresponder?\' );"/></p>';
+    <p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="paymentdetails"' . $auto['paymentdetails'] . ' value="checked" /> '.__('Add payment details to the message','multipay').'</p>';
     } else {
         echo '<p>'.__('The use the autoresponder','multipay').' <a href="?page=multipay/settings.php&tab=upgrade">'.__('Upgrade to Pro','multipay').'</a>. '.__('It\'s only $10','multipay').'.</p>
         <p>'.__('Your buyers will still receive an email from the payment gateway provider (if applicable). The autoresponder give you the opportunity to send a personalised message to the buyer along with their order details.','multipay').'</p> ';
     }
+    echo '<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="'.__('Save Changes','multipay').'" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="'.__('Reset','multipay').'" onclick="return window.confirm( \'Are you sure you want to reset the autoresponder?\' );"/></p>';
     $content = wp_nonce_field("save_qp");
     $content .= '</form>
     </div>

@@ -12,6 +12,7 @@
 .qp-style img {width:100%;height:auto;overflow:hidden;}
 .qp-style input#submit {color: #FFF;background: #343838;text-align: center;cursor: pointer;}
 .qp-style input#submitcoupon {color: #FFF;background: #1f8416;text-align: center;cursor: pointer;margin:5px 0 7px 0;padding:6px;border:1px solid #415063;width:100%;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box;font-size:inherit;}
+.qp-style label { display: inline-block; }
 span .floatleft{float:left;}
 span .floatleft.input {;padding-top:5px;}
 span .floatright {float:right;text-align:right;margin-bottom:4px;}
