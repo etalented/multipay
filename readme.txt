@@ -65,6 +65,7 @@ If it all goes wrong, just reinstall the plugin and start again. If you need hel
 == Changelog ==
 
 = 1.4 =
+*   Re-configuration of Admin Menus
 *   Added explanation for maximum quantity
 *   Removed "include postage and processing in the amount to pay" setting
 *   Removed Google onClick setting

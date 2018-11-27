@@ -9,38 +9,92 @@ Author URI: https://etalented.co.uk/
 Text-domain: multipay
 */
 
-// Register the scripts we need
-function qp_shutdown() {
-    $error = error_get_last();
+init();
+
+function init() {
+
+     include_once dirname( __FILE__ ) . '/options.php';
+    // Frontend
+    if ( !is_admin() ) {
+
+        function qp_shutdown() {
+            $error = error_get_last();
+        }
+
+        register_shutdown_function('qp_shutdown');
+
+        add_shortcode( 'multipay', 'qp_loop' );
+        add_shortcode( 'qpreport', 'qp_report' );
+
+        add_action( 'wp_enqueue_scripts', 'multipay_scripts' );
+        
+        add_action( 'wp_head', 'qp_head_css' );
+        add_action( 'init', 'qp_bootstrap' );
+        add_action( 'wp_ajax_qp_validate_form', 'qp_validate_form_callback');
+        add_action( 'wp_ajax_nopriv_qp_validate_form', 'qp_validate_form_callback');
+        add_action( 'wp_ajax_qp_process_payment', 'qp_process_payment');
+        add_action( 'wp_ajax_nopriv_qp_process_express_checkout_payment', 'qp_process_express_checkout_payment');
+
+        $qp_end_loop = false;
+        $PaymentsAPI = false;
+        
+    // Admin
+    } else {
+        add_action( 'admin_menu', 'multipay_admin_menu', 9 );
+        add_action( 'admin_enqueue_scripts', 'multipay_admin_scripts' );
+        
+        include_once dirname( __FILE__ ) . '/settings.php';
+        include_once dirname( __FILE__ ) . '/messages.php';
+    }
 }
 
-register_shutdown_function('qp_shutdown');
+function multipay_scripts() {
+	global $PaymentsAPI;
 
-add_action('init', 'qp_register_scripts');
-/*
-	Add footer event to fire and include the javascript file only when needed
-*/
-//add_action('wp_footer','qp_display_scripts');
+	// Load payment module assets
+	foreach ( $PaymentsAPI->assets() as $asset ) {
+		switch ( $asset['type'] ) {
+			case 'css':
+				wp_register_style( $asset['name'], $asset['url'] );
+			break;
+			case 'script':
+				wp_register_script( $asset['name'], $asset['url'] );
+			break;
+		}
+	}
+    
+	wp_register_script( 'multipay', plugins_url( 'multipay.js', __FILE__ ), array( 'jquery', 'jquery-effects-core', 'jquery-ui-datepicker' ), false, true );
+    
+    wp_register_style( 'jquery-ui-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
+    wp_register_style( 'multipay-style', plugins_url( 'multipay.css', __FILE__ ), array( 'jquery-ui-style' ) );
+}
 
-add_shortcode( 'multipay', 'qp_loop' );
-add_shortcode( 'qpreport', 'qp_report' );
+function multipay_admin_scripts() {
+    wp_register_script( 'multipay-media', plugins_url( 'media.js', __FILE__ ), array( 'jquery', 'wp-color-picker', 'jquery-ui-sortable', 'jquery-ui-datepicker' ), false, true );
+    
+    wp_register_style( 'jquery-ui-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
+    wp_register_style( 'multipay-admin-style', plugins_url( 'settings.css', __FILE__ ), array( 'jquery-ui-style', 'wp-color-picker' ) );
+}
 
-add_filter( 'plugin_action_links', 'qp_plugin_action_links', 10, 2 );
+function multipay_admin_menu() {
+    add_menu_page( 'Multipay', 'Multipay', 'manage_options', 'multipay-messages', null, 'dashicons-cart' );
+    add_submenu_page( 'multipay-messages', __( 'Transactions', 'multipay' ),  __( 'Transactions', 'multipay' ), 'manage_options', 'multipay-messages', 'messages_page' );
+    add_submenu_page( 'multipay-messages', __( 'Settings', 'multipay' ),  __( 'Settings', 'multipay' ), 'manage_options', 'multipay-settings', 'settings_page' );
+}
 
-add_action( 'wp_enqueue_scripts','qp_enqueue_scripts' );
-add_action( 'wp_head', 'qp_head_css' );
-add_action( 'init', 'qp_bootstrap' );
-add_action( 'wp_ajax_qp_validate_form', 'qp_validate_form_callback');
-add_action( 'wp_ajax_nopriv_qp_validate_form', 'qp_validate_form_callback');
-add_action( 'wp_ajax_qp_process_payment', 'qp_process_payment');
-add_action( 'wp_ajax_nopriv_qp_process_express_checkout_payment', 'qp_process_express_checkout_payment');
+function settings_page() {
+    wp_enqueue_style( 'multipay-admin-style' );
+    wp_enqueue_script( 'multipay-media' );
+    wp_enqueue_media();
+    
+    MultiPay_Settings::output();
+}
 
-$qp_end_loop = false;
-$PaymentsAPI = false;
-
-require_once( plugin_dir_path( __FILE__ ) . '/options.php' );
-if (is_admin()) require_once( plugin_dir_path( __FILE__ ) . '/settings.php' );
-
+function messages_page() {
+    wp_enqueue_style( 'multipay-admin-style' );
+    
+    MultiPay_Messages::output();
+}
 
 function qp_bootstrap() {
 	global $PaymentsAPI;
@@ -71,39 +125,11 @@ function qp_bootstrap() {
 	if ($amazonapi['use_amazon'] == 'checked') $PaymentsAPI->load('amazon',$amazonapi);
 }
 
-function qp_register_scripts() {
-	wp_register_script('qp_script', plugins_url('multipay.js', __FILE__), array('jquery'), false, true);
-}
-
 function qp_display_scripts() {
 	global $qp_shortcode_exists;
 
 	if ($qp_shortcode_exists)
 		wp_print_scripts('qp_script');
-}
-
-function qp_enqueue_scripts() {
-	global $PaymentsAPI;
-
-	/*
-		Load payment module assets
-	*/
-	$i = 0;
-	foreach ($PaymentsAPI->assets() as $asset) {
-		switch ($asset['type']) {
-			case 'css':
-				wp_register_style($asset['name'],$asset['url']);
-			break;
-			case 'script':
-				wp_register_script($asset['name'],$asset['url']);
-			break;
-		}
-	}
-
-    wp_enqueue_style( 'qp_style',plugins_url('multipay.css', __FILE__));
-    wp_enqueue_script("jquery-effects-core");
-    wp_enqueue_script('jquery-ui-datepicker');
-    wp_enqueue_style ('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
 }
 
 function qp_validate_form_callback($degrade = false) {
@@ -469,8 +495,8 @@ function qp_loop($atts) {
 		Loop through all of the assets we're using
 	*/
 		
-    wp_enqueue_script( 'qp_script' );
-	wp_enqueue_style( 'qp_style' );
+    wp_enqueue_script( 'multipay' );
+	wp_enqueue_style( 'multipay-style' );
 	
 	foreach ($PaymentsAPI->assets() as $asset) {
 		switch ($asset['type']) {
@@ -1308,14 +1334,6 @@ function qp_head_css() {
     echo $data;
 }
 
-function qp_plugin_action_links($links, $file ) {
-    if ( $file == plugin_basename( __FILE__ ) ) {
-        $qp_links = '<a href="'.get_admin_url().'options-general.php?page=multipay/settings.php">'.__('Settings').'</a>';
-        array_unshift( $links, $qp_links );
-    }
-    return $links;
-}
-
 function qp_report($atts) {
     extract(shortcode_atts(array( 'form' =>''), $atts));
     return qp_messagetable($form,'');
@@ -1330,7 +1348,8 @@ function qp_messagetable ($form,$email) {
     $address = qp_get_stored_address($form);
     $c = qp_currency ($form);
     $showthismany = '9999';
-    $content = $padding = $count = $arr = '';
+    $dashboard = $table_content = $table = $padding = $arr = '';
+    $count = 0;
     if ($messageoptions['messageqty'] == 'fifty') $showthismany = '50';
     if ($messageoptions['messageqty'] == 'hundred') $showthismany = '100';
     $$messageoptions['messageqty'] = "checked";
@@ -1347,29 +1366,31 @@ function qp_messagetable ($form,$email) {
     
     
     if (!$email) $dashboard = '<div class="wrap"><div id="qp-widget">';
-    else $padding = 'cellpadding="5"';      
-    $dashboard .= '<table cellspacing="0" '.$padding.'><tr>';
-    if (!$email) $dashboard .= '<th></th>';
-    $dashboard .= '<th style="text-align:left">Date Sent</th>';
+    else $padding = 'cellpadding="5"';
+    
+    $table .= '<table cellspacing="0" '.$padding.'><tr>';
+    if (!$email) $table .= '<th></th>';
+    
+    $table .= '<th style="text-align:left">Date Sent</th>';
     foreach (explode( ',',$options['sort']) as $name) {
         $title='';
         switch ( $name ) {
-            case 'reference': $dashboard .= '<th style="text-align:left">'.$options['inputreference'].'</th>';break;
-            case 'quantity': $dashboard .= '<th style="text-align:left">'.$options['quantitylabel'].'</th>';break;
-            case 'amount': $dashboard .= '<th style="text-align:left">'.$options['inputamount'].'</th>';break;
-            case 'stock': if ($options['use_stock']) $dashboard .= '<th style="text-align:left">'.$options['stocklabel'].'</th>';break;
-            case 'options': if ($options['use_options']) $dashboard .= '<th style="text-align:left">'.$options['optionlabel'].'</th>';break;
-            case 'coupon': if ($options['usecoupon']) $dashboard .= '<th style="text-align:left">'.$options['couponblurb'].'</th>';break;
-            case 'email': if ($options['useemail']) $dashboard .= '<th style="text-align:left">'.$options['emailblurb'].'</th>';break;
-            case 'message': if ($options['use_message']) $dashboard .= '<th style="text-align:left:max-width:20%;">'.$options['messagelabel'].'</th>';break;
-            case 'datepicker': if ($options['use_datepicker']) $dashboard .= '<th style="text-align:left:max-width:20%;">'.$options['datepickerlabel'].'</th>';break;
+            case 'reference': $table .= '<th style="text-align:left">'.$options['inputreference'].'</th>';break;
+            case 'quantity': $table .= '<th style="text-align:left">'.$options['quantitylabel'].'</th>';break;
+            case 'amount': $table .= '<th style="text-align:left">'.$options['inputamount'].'</th>';break;
+            case 'stock': if ($options['use_stock']) $table .= '<th style="text-align:left">'.$options['stocklabel'].'</th>';break;
+            case 'options': if ($options['use_options']) $table .= '<th style="text-align:left">'.$options['optionlabel'].'</th>';break;
+            case 'coupon': if ($options['usecoupon']) $table .= '<th style="text-align:left">'.$options['couponblurb'].'</th>';break;
+            case 'email': if ($options['useemail']) $table .= '<th style="text-align:left">'.$options['emailblurb'].'</th>';break;
+            case 'message': if ($options['use_message']) $table .= '<th style="text-align:left:max-width:20%;">'.$options['messagelabel'].'</th>';break;
+            case 'datepicker': if ($options['use_datepicker']) $table .= '<th style="text-align:left:max-width:20%;">'.$options['datepickerlabel'].'</th>';break;
         }
     }
     if ($messageoptions['showaddress']) {
         $arr = array('firstname','lastname','email','address1','address2','city','state','zip','country','night_phone_b');
-        foreach ($arr as $item) $dashboard .= '<th style="text-align:left">'.$address[$item].'</th>';
+        foreach ($arr as $item) $table .= '<th style="text-align:left">'.$address[$item].'</th>';
     }
-    $dashboard .= '<th>'.__('Payment','multipay').'</th>
+    $table .= '<th>'.__('Payment','multipay').'</th>
     <th>'.__('Merchant','multipay').'</th>
     <th>'.__('Transaction ID','multipay').'</th>
     </tr>';
@@ -1377,8 +1398,7 @@ function qp_messagetable ($form,$email) {
         $i=count($message) - 1;
         foreach(array_reverse( $message ) as $value) {
             if ($count < $showthismany ) {
-                if ($value['sentdate']) $report = 'messages';
-                $content .= qp_messagecontent ($form,$value,$options,$c,$messageoptions,$address,$arr,$i,$email);
+                $table_content .= qp_messagecontent ($form,$value,$options,$c,$messageoptions,$address,$arr,$i,$email);
                 $count = $count+1;
                 $i--;
             }
@@ -1387,15 +1407,17 @@ function qp_messagetable ($form,$email) {
         $i=0;
         foreach($message as $value) {
             if ($count < $showthismany ) {
-                if ($value['sentdate']) $report = 'messages';
-                $content .= qp_messagecontent ($form,$value,$options,$c,$messageoptions,$address,$arr,$i,$email);
+                $table_content .= qp_messagecontent ($form,$value,$options,$c,$messageoptions,$address,$arr,$i,$email);
                 $count = $count+1;
                 $i++;
             }
         }
-    }	
-    if ($report) $dashboard .= $content.'</table>';
-    else $dashboard .= '</table><p>'.__('No payments found','multipay').'</p>';
+    }
+    
+    $table .= $table_content.'</table>';
+    
+    if ($table_content) $dashboard .= $table;
+    else $dashboard .= '<p>'.__('No payments found','multipay').'</p>';
     
     for ($i=1; $i<=$coupon['couponnumber']; $i++) {
         if ($coupon['qty'.$i] > 0) $coups .= '<p>'.$coupon['code'.$i].' - '.$coupon['qty'.$i].'</p>';
@@ -1696,4 +1718,8 @@ function qp_upgrade_ipn() {
         wp_mail($email,'MultiPay Plugin Authorisation Key',$message,$headers);
     }
     exit();
+}
+
+function qp_admin_notice($message) {
+    if (!empty( $message)) echo '<div class="updated"><p>'.$message.'</p></div>';
 }
