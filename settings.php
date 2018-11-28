@@ -953,13 +953,13 @@ class MultiPay_Settings {
 
         <h2>'.__('Add to Mailchimp','multipay').'</h2>
         <p>'.__('This will only work if you are collecting names and email addresses','multipay').'</p>
-        <p>'.__('Your mailchimp region:
+        <p>'.__('Your Mailchimp Region:
         <input type="text" style="width:100%" name="mailchimpregion" value="' . $send['mailchimpregion'] . '" />','multipay').'</p>
-        <p>'.__('Your mailchimp user ID:
+        <p>'.__('Your Mailchimp User ID:
         <input type="text" style="width:100%" name="mailchimpuser" value="' . $send['mailchimpuser'] . '" />','multipay').'</p>
-        <p>'.__('The mailchimp list ID:
+        <p>'.__('The Mailchimp List ID:
         <input type="text" style="width:100%" name="mailchimpid" value="' . $send['mailchimpid'] . '" />','multipay').'</p>
-
+        <p><a href="https://wordpress.org/plugins/multipay/#faq" target="_blank">'.__("Visit the FAQ to find out what to put here",'multipay').'</a></p>
         <p>'.__('<input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the form settings?\' );"/>','multipay').'</p>
         </div>
         <div class="qp-options">

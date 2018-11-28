@@ -62,6 +62,16 @@ Upgrade to Pro and at the bottom of the dashboard menu is a link called 'MultiPa
 = It's all gone wrong! =
 If it all goes wrong, just reinstall the plugin and start again. If you need help then please use the Support Forum.
 
+= How do I use Add to Mailchimp? =
+When a customer uses your form, you can add their email address to any List on Mailchimp. 
+Just follow these steps:
+1.  Enable and make required the Email Address field in the Form Settings tab in the MultiPay Settings
+2.  Open your List on Mailchimp
+3.  Go to Signup forms, then Embedded forms
+4.  In the "Copy/paste onto your site" section, you will find a URL that looks like this: `https://etalented.us15.list-manage.com/subscribe/post?u=1b8595fad6a4c50dde29f98c7&amp;id=c195bc34f7` - copy and paste this URL into a text editor such as Notepad
+5.  Go to the Processing tab in the MultiPay Settings, then copy and paste the correct part from the URL into the matching Mailchimp settings field using this template as a guide: `https://etalented.[Region].list-manage.com/subscribe/post?u=[User ID]&amp;id=[List ID]`
+6.  Remember to Save Changes
+
 == Changelog ==
 
 = 1.4 =
