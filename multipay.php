@@ -15,7 +15,7 @@ function init() {
 
      include_once dirname( __FILE__ ) . '/options.php';
     // Frontend
-    if ( !is_admin() ) {
+    if ( !is_admin() || (defined('DOING_AJAX') && DOING_AJAX) ) {
 
         function qp_shutdown() {
             $error = error_get_last();
