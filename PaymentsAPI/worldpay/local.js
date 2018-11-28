@@ -61,7 +61,8 @@ jQuery('document').ready(function() {
 			}
 			$_iframe_visible = function() {
 				if (Worldpay.templateFormVisible) {
-					$('#_iframe_price').fadeIn('slow');
+					$('#_iframe_price').fadeIn();
+					$('.qp_payment_modal').fadeOut();
 					window.setTimeout($_iframe_invisible, 50);
 				} else {
 					window.setTimeout($_iframe_visible, 50);
