@@ -20,7 +20,7 @@ jQuery('document').ready(function() {
 			/*
 				Validation success
 			*/
-			$('body').append($("<div id='qp_wp_modal'></div><form id='qp_wp_temp_form'><div id='mySection'><button>Testing</button></div><button onclick='Worldpay.submitTemplateForm()' id='_iframe_price' style='display: none;'>Pay "+data.currency_sign.b+data.amount+"</button><a id='qp_wp_modal_close'>x</a></form>"));
+			$('body').append($("<div id='qp_wp_modal'></div><form id='qp_wp_temp_form'><div id='mySection'><button>Testing</button></div><button onclick='Worldpay.submitTemplateForm()' id='_iframe_price' style='display: none;'>Pay "+data.currency_sign.b+data.data.amount+"</button><a id='qp_wp_modal_close'>x</a></form>"));
 
 			Worldpay.useTemplateForm({
 				'clientKey':data.data.key,
