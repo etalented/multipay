@@ -897,8 +897,9 @@ function qp_display_form($values, $errors, $form, $attr = '') {
             break;
             
             case 'email':
-            if ($qp['useemail']) {
-                $content .= '<input type="text" id="email" name="email" value="' . $values['email'] . '" rel="' . $values['email'] . '" onfocus="qpclear(this, \'' . $values['email'] . '\')" onblur="qprecall(this, \'' . $values['email'] . '\')"/>';
+            if ($qp['use_email']) {
+                $requiredemail = (!$errors['use_email'] && $qp['ruse_email'] ? ' class="required" ' : '');
+                $content .= '<input type="text" '.$requiredemail.$errors['use_stock'].' id="email" name="email" value="' . $values['email'] . '" rel="' . $values['email'] . '" onfocus="qpclear(this, \'' . $values['email'] . '\')" onblur="qprecall(this, \'' . $values['email'] . '\')"/>';
             }
             break;
                 
