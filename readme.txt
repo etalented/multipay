@@ -80,6 +80,7 @@ Just follow these steps:
 *   Removed "include postage and processing in the amount to pay" setting
 *   Removed Google onClick setting
 *   Removed currencies field
+*   Fixed display of form validation overlays - now they close automatically
 *   Fixed changing email address for confirmation message for non-upgrade version
 *   Fixed payment methods will go to thank you or cancelled URLs
 *   Fixed submit button position and size
