@@ -39,6 +39,9 @@ jQuery('document').ready(function() {
 					if (!qp_dont_cancel) qp_redirect({'module':'stripe','force':'failure'});
 					
 					qp_close_modal();
+				},
+				'opened': function() {
+					qp_close_modal();
 				}
 			});
 			
@@ -51,11 +54,9 @@ jQuery('document').ready(function() {
 			
 			if (data.data.email.length > 0) options.email = data.data.email;
 			
+			qp_stripe_handler.open(options);
 			$('.qp_payment_modal_button input').click(function() {
-				
 				qp_close_modal();
-				qp_stripe_handler.open(options);
-				
 			});
 		},function(e) {
 			qp_show_main(k);
