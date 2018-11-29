@@ -622,13 +622,7 @@ class MultiPay_Settings {
 
         $content .= wp_nonce_field("save_qp");
         $content .= '</form>
-        </div>
-        <div class="qp-options">
-        <h2>'.__('Form Preview','multipay').'</h2>
-        <p>'.__('Note: The preview form uses the wordpress admin styles. Your form will use the theme styles so won\'t look exactly like the one below.','multipay').'</p>';
-//        $args = array('form' => $form, 'id' => '', 'amount' => '');
-//        $content .= qp_loop($args);
-        $content .='</div></div>';
+        </div></div>';
         echo $content;
     }
 
@@ -884,12 +878,7 @@ class MultiPay_Settings {
         <p>'.__('<input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the form styles?\' );"/>','multipay').'</p>';
         $content .= wp_nonce_field("save_qp");
         $content .= '</form>
-        </div>
-        <div class="qp-options"> <h2>'.__('Test Form','multipay').'</h2>
-        <p>'.__('Not all of your style selections will display here (because of how WordPress works). So check the form on your site.','multipay').'</p>';
-//        $args = array('form' => $form, 'id' => '', 'amount' => '');
-//        $content .= qp_loop($args);
-        $content .='</div></div>';
+        </div></div>';
         echo $content;
     }
 
