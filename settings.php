@@ -332,11 +332,11 @@ class MultiPay_Settings {
             }
             if ($qppkey['authorised']) {
                 $options = array(
-                    'usecoupon',
+                    'use_coupon',
                     'couponblurb',
                     'couponref',
                     'couponbutton',
-                    'usetotals',
+                    'use_totals',
                     'totalsblurb',
                     'use_datepicker',
                     'ruse_datepicker',
@@ -438,7 +438,7 @@ class MultiPay_Settings {
                 break;
                 case 'stock': 
                 $check = '<input type="checkbox" name="use_stock" ' . $qp['use_stock'] . ' value="checked" />';
-                $type = 'Use Item Number';
+                $type = 'Item Number';
                 $input = 'stocklabel';
                 $checked = $qp['use_stock'];
                 $required = '<input type="checkbox" name="ruse_stock" ' . $qp['ruse_stock'] . ' value="checked" />';
@@ -457,10 +457,10 @@ class MultiPay_Settings {
                 <p><input type="checkbox" name="inline_options" ' . $qp['inline_options'] . ' value="checked" />&nbsp;Display inline radio and checkbox fields</p>'; 
                 break;
                 case 'postage': 
-                $check = '<input type="checkbox" name="usepostage" ' . $qp['usepostage'] . ' value="checked" />';
+                $check = '<input type="checkbox" name="use_postage" ' . $qp['use_postage'] . ' value="checked" />';
                 $type = 'Postal charge';
                 $input = 'postageblurb';
-                $checked = $qp['usepostage'];
+                $checked = $qp['use_postage'];
                 $required = '';
                 $postagetype = $qp['postagetype'];
                 $options = '<p class="description">Post and Packing charge type:</p>
@@ -468,10 +468,10 @@ class MultiPay_Settings {
                 <p><input type="radio" name="postagetype" value="postagefixed" ' . (($postagetype == 'postagefixed') ? 'checked' : '') . ' /> Fixed amount: <input type="text" style="width:4em;padding:2px" label="postagefixed" name="postagefixed" value="' . $qp['postagefixed'] . '" /> '.$currency[$form].'</p>'; 
                 break;
                 case 'processing': 
-                $check = '<input type="checkbox" name="useprocess" ' . $qp['useprocess'] . ' value="checked" />';
+                $check = '<input type="checkbox" name="use_process" ' . $qp['use_process'] . ' value="checked" />';
                 $type = 'Processing Charge';
                 $input = 'processblurb';
-                $checked = $qp['useprocess'];
+                $checked = $qp['use_process'];
                 $required = '';
                 $processtype = $qp['processtype'];
                 $options = '<p class="description">Payment charge type:</p>
@@ -480,10 +480,10 @@ class MultiPay_Settings {
                 break;
                 case 'coupon': 
                 if ($qppkey['authorised']) {
-                    $check = '<input type="checkbox" name="usecoupon" ' . $qp['usecoupon'] . ' value="checked" />';
+                    $check = '<input type="checkbox" name="use_coupon" ' . $qp['use_coupon'] . ' value="checked" />';
                     $type = 'Coupon Code';
                     $input = 'couponblurb';
-                    $checked = $qp['usecoupon'];
+                    $checked = $qp['use_coupon'];
                     $required = '';
                     $options = '<p class="description">Button label:</p>
                     <p><input type="text" name="couponbutton" value="' . $qp['couponbutton'] . '" /></p>
@@ -500,18 +500,18 @@ class MultiPay_Settings {
                 } 
                 break;
                 case 'additionalinfo': 
-                $check = '<input type="checkbox" name="useblurb" ' . $qp['useblurb'] . ' value="checked" />';
+                $check = '<input type="checkbox" name="use_blurb" ' . $qp['use_blurb'] . ' value="checked" />';
                 $type = 'Additional Information';
                 $input = 'extrablurb';
-                $checked = $qp['useblurb'];
+                $checked = $qp['use_blurb'];
                 $required = '';
                 $options = '<p class="description">Add additional information to your form</p>';
                 break;
                 case 'address': 
-                $check = '<input type="checkbox" name="useaddress" ' . $qp['useaddress'] . ' value="checked" />';
+                $check = '<input type="checkbox" name="use_address" ' . $qp['use_address'] . ' value="checked" />';
                 $type = 'Personal Details';
                 $input = 'addressblurb';
-                $checked = $qp['useaddress'];
+                $checked = $qp['use_address'];
                 $options = '<p><a href="admin.php?page=multipay-settings&tab=address">'.__('Personal details Settings','multipay').'</a></p>';
                 break;
                 case 'slider';
@@ -568,10 +568,10 @@ class MultiPay_Settings {
                 }   
                 break;
                 case 'terms': 
-                $check = '<input type="checkbox" name="useterms" ' . $qp['useterms'] . ' value="checked" />';
+                $check = '<input type="checkbox" name="use_terms" ' . $qp['use_terms'] . ' value="checked" />';
                 $type = 'Terms and Conditions';
                 $input = 'termsblurb';
-                $checked = $qp['useterms'];
+                $checked = $qp['use_terms'];
                 $required = '';
                 $options = '<p class="description">URL of Terms and Conditions:</p>
                 <p><input type="text" name="termsurl" value="' . $qp['termsurl'] . '" /></p>
@@ -586,10 +586,10 @@ class MultiPay_Settings {
                 break;
                 case 'totals':
                 if ($qppkey['authorised']) {
-                    $check = '<input type="checkbox" name="usetotals" ' . $qp['usetotals'] . ' value="checked" />';
+                    $check = '<input type="checkbox" name="use_totals" ' . $qp['use_totals'] . ' value="checked" />';
                     $type = 'Show totals';
                     $input = 'totalsblurb';
-                    $checked = $qp['usetotals'];
+                    $checked = $qp['use_totals'];
                     $required = '';
                     $options = '<p class="description">Show live totals on your form.</p>';
                 } else {
@@ -654,7 +654,7 @@ class MultiPay_Settings {
                 'corners',
                 'custom',
                 'use_custom',
-                'usetheme',
+                'use_theme',
                 'styles',
                 'submit-colour',
                 'submit-background',
@@ -789,7 +789,7 @@ class MultiPay_Settings {
         <td><span class="description">'.__('Set the margins and padding of each bit using CSS shortcodes', 'multipay').':</span><br><input type="text" label="line margin" name="line_margin" value="' . $style['line_margin'] . '" /></td>
         </tr>
         <tr>';
-        if ($qp['usecoupon']) $content .= '<td colspan="2"><h2>'.__('Apply Coupon Button','multipay').'</h2></td>
+        if ($qp['use_coupon']) $content .= '<td colspan="2"><h2>'.__('Apply Coupon Button','multipay').'</h2></td>
         </tr>
         <tr>
         <td>Font Colour: </td>
@@ -1248,12 +1248,7 @@ class MultiPay_Settings {
         <p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="'.__('Save Changes','multipay').'" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="'.__('Reset','multipay').'" onclick="return window.confirm( \'Are you sure you want to reset the error message?\' );"/></p>';
         $content .= wp_nonce_field("save_qp");
         $content .= '</form>
-        </div>
-        <div class="qp-options">
-        <h2>'.__('Example Form','multipay').'</h2>';
-//        $args = array('form' => $form, 'id' => '', 'amount' => '');
-//        $content .= qp_loop($args);
-        $content .='</div></div>';
+        </div></div>';
         echo $content;
     }
 
