@@ -158,7 +158,7 @@ function qp_validate_form_callback($degrade = false) {
 			foreach ($formerrors as $k => $v) {
 				if ($k == 'captcha') $k = 'maths';
 				if ($k == 'use_stock') $k = 'stock';
-				if ($k == 'useterms') $k = 'termschecked';
+				if ($k == 'use_terms') $k = 'termschecked';
 				if ($k == 'use_message') $k = 'yourmessage';
 				$json->errors[] = (object) array(
 					'name' => $k,
@@ -225,7 +225,7 @@ function qp_formulate_v($atts,&$v, &$form = 'default', &$amount = '', &$id = '',
 	$v['srt'] = $qp['srt'];
     $v['combine'] = $v['couponapplied'] = $v['couponget'] =$v['maths'] = $v['explodepay'] =  $v['explode'] = $v['recurring'] = $v['termschecked'] = '';
     
-    if (!$address['email'] || !$qp['useaddress']) {
+    if (!$address['email'] || !$qp['use_address']) {
         $v['email'] = $qp['emailblurb'];
     }
     
@@ -660,7 +660,7 @@ function qp_display_form($values, $errors, $form, $attr = '') {
         );
         foreach ($arr as $item) if ($errors[$item] == 'error') 
             $errors[$item] = ' style="border:1px solid '.$style['error-colour'].';" ';
-        if ($errors['useterms']) $errors['useterms'] = 'border:1px solid '.$style['error-colour'].';';
+        if ($errors['use_terms']) $errors['use_terms'] = 'border:1px solid '.$style['error-colour'].';';
         if ($errors['captcha']) $errors['captcha'] = 'border:1px solid '.$style['error-colour'].';';
         if ($errors['quantity']) $errors['quantity'] = 'border:1px solid '.$style['error-colour'].';';
     } else {
@@ -748,7 +748,7 @@ function qp_display_form($values, $errors, $form, $attr = '') {
             break;
             
             case 'amount':
-            if ($qp['usecoupon'] && $values['couponapplied']) 
+            if ($qp['use_coupon'] && $values['couponapplied']) 
                 $content .= '<p>'.$qp['couponref'].'</p>';
             if ($qp['use_slider'] && !$values['combine']) {
                 $content .= '<p style="margin-bottom:0.7em;">'.$qp['sliderlabel'].'</p>
@@ -822,7 +822,7 @@ function qp_display_form($values, $errors, $form, $attr = '') {
             break;
             
             case 'postage':
-            if ($qp['usepostage']) {
+            if ($qp['use_postage']) {
 				$content .= '<p class="input" >'.$qp['postageblurb'].'</p>
 				<input type="hidden" name="postage_type" value="'.((htmlentities($qp['postagetype']) == 'postagepercent')? 'percent':'fixed').'" />
 				<input type="hidden" name="postage" value="'.htmlentities($qp[$qp['postagetype']]).'" />';
@@ -830,7 +830,7 @@ function qp_display_form($values, $errors, $form, $attr = '') {
             break;
             
             case 'processing':
-            if ($qp['useprocess']) {
+            if ($qp['use_process']) {
 				$content .= '<p class="input" >'.$qp['processblurb'].'</p>
 				<input type="hidden" name="processing_type" value="'.((htmlentities($qp['processtype']) == 'processpercent')? 'percent':'fixed').'" /><input type="hidden" name="processing" value="'.htmlentities($qp[$qp['processtype']]).'" />';
 			}
@@ -848,9 +848,9 @@ function qp_display_form($values, $errors, $form, $attr = '') {
             
             case 'coupon':
             $content .= '<input type="hidden" name="couponapplied" value="'.$values['couponapplied'].'" />';
-            if ($qp['usecoupon'] && $values['couponapplied']) 
+            if ($qp['use_coupon'] && $values['couponapplied']) 
                 $content .= '<input type="hidden" name="couponblurb" value="'.$values['couponblurb'].'" />';
-            if ($qp['usecoupon'] && !$values['couponapplied']){
+            if ($qp['use_coupon'] && !$values['couponapplied']){
                 if ($values['couponerror']) $content .= '<p style="color:'.$style['error-colour'].';">'.$values['couponerror'].'</p>';
                 $content .= '<p>'.$values['couponget'].'</p>';
                 $content .= '<p><input type="text" id="coupon" name="couponblurb" value="' . $values['couponblurb'] . '" rel="' . $values['couponblurb'] . '" onfocus="qpclear(this, \'' . $values['couponblurb'] . '\')" onblur="qprecall(this, \'' . $values['couponblurb'] . '\')"/></p>
@@ -861,11 +861,11 @@ function qp_display_form($values, $errors, $form, $attr = '') {
             break;
             
             case 'terms':
-            if ($qp['useterms']) {
+            if ($qp['use_terms']) {
                 if ($qp['termspage']) $target = ' target="blank" ';
-                $required = (!$errors['useterms'] ? 'border:'.$style['required-border'].';' : $errors['useterms']);
-                $color = ($errors['useterms'] ? ' style="color:'.$style['error-colour'].';" ' : '');
-                $content .= '<p class="input" '.$errors['useterms'].'>
+                $required = (!$errors['use_terms'] ? 'border:'.$style['required-border'].';' : $errors['use_terms']);
+                $color = ($errors['use_terms'] ? ' style="color:'.$style['error-colour'].';" ' : '');
+                $content .= '<p class="input" '.$errors['use_terms'].'>
                 <input type="checkbox" style="margin:0; padding: 0;width:auto;'.$required.'" name="termschecked" value="checked" ' . $values['termschecked'] . '>
                 &nbsp;
                 <a href="'.$qp['termsurl'].'"'.$target.$color.'>'.$qp['termsblurb'].'</a></p>';
@@ -873,11 +873,11 @@ function qp_display_form($values, $errors, $form, $attr = '') {
             break;
             
             case 'additionalinfo':
-            if ($qp['useblurb']) $content .= '<p>' . $qp['extrablurb'] . '</p>';
+            if ($qp['use_blurb']) $content .= '<p>' . $qp['extrablurb'] . '</p>';
             break;
             
             case 'address':
-            if ($qp['useaddress']) {
+            if ($qp['use_address']) {
                 $content .= '<p>' . $qp['addressblurb'] . '</p>';
                 $arr = array('firstname','lastname','email','address1','address2','city','state','zip','country','night_phone_b');
                 foreach($arr as $item)
@@ -889,7 +889,7 @@ function qp_display_form($values, $errors, $form, $attr = '') {
             break;
             
             case 'totals':
-            if ($qp['usetotals']) {
+            if ($qp['use_totals']) {
                 $content .= '<p style="font-weight:bold;">'.$qp['totalsblurb'].' '.$c['b'].'<input type="text" id="qptotal" name="total" value="0.00" readonly="readonly" />'.$c['a'].'</p>';
             } else {
              $content .= '<input type="hidden" id="qptotal" name="total"  />';   
@@ -941,7 +941,7 @@ function qp_display_form($values, $errors, $form, $attr = '') {
 	$modal .= 	"</div>";
 	
 	$content .= $modal;
-    if ($qp['usetotals'] || $qp['use_slider'] || (isset($qp['combobox']) && $qp['combobox'] == 'checked')) 
+    if ($qp['use_totals'] || $qp['use_slider'] || (isset($qp['combobox']) && $qp['combobox'] == 'checked')) 
         $content .='<script type="text/javascript">jQuery(document).ready(function() { jQuery("#frmPayment'.$t.'").qp(); });</script>';
 
     $content .= '<script>jQuery("select option:selected").click(); //force calculation by clicking on default values</script>
@@ -985,10 +985,10 @@ function qp_checkbox($arr,$values,$name,$br) {
 function qp_explode_by_semicolon ($_) {return explode (';', $_);}
 
 function qp_handling ($qp,$check,$quantity){
-    if ($qp['useprocess'] && $qp['processtype'] == 'processpercent') {
+    if ($qp['use_process'] && $qp['processtype'] == 'processpercent') {
         $percent = preg_replace ( '/[^.,0-9]/', '', $qp['processpercent']) / 100;
         $handling = $check * $quantity * $percent;}
-    if ($qp['useprocess'] && $qp['processtype'] == 'processfixed') {
+    if ($qp['use_process'] && $qp['processtype'] == 'processfixed') {
         $handling = preg_replace ( '/[^.,0-9]/', '', $qp['processfixed']);}
     else $handling = '';
     return $handling;
@@ -996,10 +996,10 @@ function qp_handling ($qp,$check,$quantity){
 
 function qp_postage($qp,$check,$quantity){
     $packing='';
-    if ($qp['usepostage'] && $qp['postagetype'] == 'postagepercent') {
+    if ($qp['use_postage'] && $qp['postagetype'] == 'postagepercent') {
         $percent = preg_replace ( '/[^.,0-9]/', '', $qp['postagepercent']) / 100;
         $packing = $check * $quantity * $percent;}
-    if ($qp['usepostage'] && $qp['postagetype'] == 'postagefixed') {
+    if ($qp['use_postage'] && $qp['postagetype'] == 'postagefixed') {
         $packing = preg_replace ( '/[^.,0-9]/', '', $qp['postagefixed']);}
     else $packing='';
     return $packing;
@@ -1059,9 +1059,9 @@ function qp_verify_form(&$v,&$errors,$form) {
         if(empty($v['maths'])) $errors['captcha'] = 'error'; 
     }
     
-    if($qp['useterms'] && !$v['termschecked']) $errors['useterms'] = 'error';
+    if($qp['use_terms'] && !$v['termschecked']) $errors['use_terms'] = 'error';
     
-    if($qp['useaddress']) {
+    if($qp['use_address']) {
         $arr = array('firstname','lastname', 'email','address1','address2','city','state','zip','country','night_phone_b');
         foreach ($arr as $item) {
             $v[$item] = filter_var($v[$item], FILTER_SANITIZE_STRING);
@@ -1075,7 +1075,7 @@ function qp_verify_form(&$v,&$errors,$form) {
     if ($qp['use_message'] && $qp['ruse_message'] && ($v['yourmessage'] == $qp['messagelabel'] || empty($v['yourmessage'])))
         $errors['use_message'] = 'error';
         
-    if ($qp['useemail'] && $qp['ruseemail'] && ($v['email'] == $qp['emailblurb'] || empty($v['email'])))
+    if ($qp['use_email'] && $qp['ruse_email'] && ($v['email'] == $qp['emailblurb'] || empty($v['email'])))
         $errors['email'] = 'error';
         
     if ($qp['ruse_options']) {
@@ -1145,14 +1145,14 @@ function qp_process_form($values,$form,$module, $qp_key) {
 	if ($qp['processtype'] == 'processpercent') {
 		$val = ($values['price'] * $values['quantity'] * (preg_replace( '/[^.,0-9]/', '', $val) / 100));
 	}
-	if ($qp['useprocess'] == '') $val = 0;
+	if ($qp['use_process'] == '') $val = 0;
 	$values['processing'] = qp_format_amount($currency[$form],$qp,$val);
 	
 	$val = $qp[$qp['postagetype']];
 	if ($qp['postagetype'] == 'postagepercent') {
 		$val = ($values['price'] * $values['quantity'] * (preg_replace( '/[^.,0-9]/', '', $val) / 100));
 	}
-	if ($qp['usepostage'] == '') $val = 0;
+	if ($qp['use_postage'] == '') $val = 0;
 	$values['shipping'] = qp_format_amount($currency[$form],$qp,$val);
 	
     $values['amount'] = $amounttopay;
@@ -1385,8 +1385,8 @@ function qp_messagetable ($form,$email) {
             case 'amount': $table .= '<th style="text-align:left">'.$options['inputamount'].'</th>';break;
             case 'stock': if ($options['use_stock']) $table .= '<th style="text-align:left">'.$options['stocklabel'].'</th>';break;
             case 'options': if ($options['use_options']) $table .= '<th style="text-align:left">'.$options['optionlabel'].'</th>';break;
-            case 'coupon': if ($options['usecoupon']) $table .= '<th style="text-align:left">'.$options['couponblurb'].'</th>';break;
-            case 'email': if ($options['useemail']) $table .= '<th style="text-align:left">'.$options['emailblurb'].'</th>';break;
+            case 'coupon': if ($options['use_coupon']) $table .= '<th style="text-align:left">'.$options['couponblurb'].'</th>';break;
+            case 'email': if ($options['use_email']) $table .= '<th style="text-align:left">'.$options['emailblurb'].'</th>';break;
             case 'message': if ($options['use_message']) $table .= '<th style="text-align:left:max-width:20%;">'.$options['messagelabel'].'</th>';break;
             case 'datepicker': if ($options['use_datepicker']) $table .= '<th style="text-align:left:max-width:20%;">'.$options['datepickerlabel'].'</th>';break;
         }
@@ -1450,10 +1450,10 @@ function qp_messagecontent ($form,$value,$options,$c,$messageoptions,$address,$a
             case 'options': if ($options['use_options']) {
                 if ($options['optionlabel'] == $value['optionlabel']) $value['option1']='';
                 $content .= '<td>'.$value['option1'].'</td>';}break;
-            case 'coupon': if ($options['usecoupon']) {
+            case 'coupon': if ($options['use_coupon']) {
                 if ($options['couponblurb'] == $value['couponblurb']) $value['couponblurb']='';
                 $content .= '<td>'.$value['couponblurb'].'</td>';}break;
-            case 'email': if ($options['useemail']) {
+            case 'email': if ($options['use_email']) {
                 if ($options['emailblurb'] == $value['email']) $value['email']='';
                 $content .= '<td>'.$value['email'].'</td>';}break;
             case 'message': if ($options['use_message']) {
@@ -1552,7 +1552,7 @@ function qp_send_confirmation ($values,$form) {
     
     $subject = 'Payment for '.$values['reference'];
     
-    if ($qp['useaddress']) {
+    if ($qp['use_address']) {
         $details .= '<h2>'.__('Personal Details','multipay').'</h2>
         <table>
         <tr><td>'.$address['email'].'</td><td>'.$values['email'].'</td></tr></tr>
@@ -1584,21 +1584,21 @@ function qp_total_amount ($currency,$qp,$values) {
     $check = qp_format_amount($currency,$qp,$values['amount']);
     
     $quantity = ($values['quantity'] < 1 ? '1' : strip_tags($values['quantity']));
-   	if ($qp['useprocess'] && $qp['processtype'] == 'processpercent') {
+   	if ($qp['use_process'] && $qp['processtype'] == 'processpercent') {
         $percent = preg_replace ( '/[^.,0-9]/', '', $qp['processpercent']) / 100;
         $handling = $check * $quantity * $percent;
         $handling = (float) qp_format_amount($currency,$qp,$handling);
     }
-	if ($qp['useprocess'] && $qp['processtype'] == 'processfixed') {
+	if ($qp['use_process'] && $qp['processtype'] == 'processfixed') {
         $handling = preg_replace ( '/[^.,0-9]/', '', $qp['processfixed']);
         $handling = (float) qp_format_amount($currency,$qp,$handling);
     }
-	if ($qp['usepostage'] && $qp['postagetype'] == 'postagepercent') {
+	if ($qp['use_postage'] && $qp['postagetype'] == 'postagepercent') {
         $percent = preg_replace ( '/[^.,0-9]/', '', $qp['postagepercent']) / 100;
         $packing = $check * $quantity * $percent;
         $packing = (float) qp_format_amount($currency,$qp,$packing);
     }
-	if ($qp['usepostage'] && $qp['postagetype'] == 'postagefixed') {
+	if ($qp['use_postage'] && $qp['postagetype'] == 'postagefixed') {
         $packing = preg_replace ( '/[^.,0-9]/', '', $qp['postagefixed']);
         $packing = (float) qp_format_amount($currency,$qp,$packing);
     }

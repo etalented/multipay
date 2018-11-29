@@ -295,29 +295,29 @@ class MultiPay_Settings {
                 'optionvalues',
                 'optionselector',
                 'inline_options',
-                'useprocess',
+                'use_process',
                 'processblurb',
                 'processref',
                 'processtype',
                 'processpercent',
                 'processfixed',
-                'usepostage',
+                'use_postage',
                 'postageblurb',
                 'postageref',
                 'postagetype',
                 'postagepercent',
                 'postagefixed',
-                'useblurb',
+                'use_blurb',
                 'extrablurb',
-                'useaddress',
+                'use_address',
                 'addressblurb',
-                'useemail',
-                'ruseemail',
+                'use_email',
+                'ruse_email',
                 'emailblurb',
                 'use_message',
                 'ruse_message',
                 'messagelabel',
-                'useterms',
+                'use_terms',
                 'termsblurb',
                 'termsurl',
                 'termspage',
@@ -339,7 +339,7 @@ class MultiPay_Settings {
                     'usetotals',
                     'totalsblurb',
                     'use_datepicker',
-                    'rusedatepicker',
+                    'ruse_datepicker',
                     'datepickerblurb',
                     'use_slider',
                     'sliderlabel',
@@ -535,11 +535,11 @@ class MultiPay_Settings {
                 }
                 break;
                 case 'email': 
-                $check = '<input type="checkbox" name="useemail" ' . $qp['useemail'] . ' value="checked" />';
+                $check = '<input type="checkbox" name="use_email" ' . $qp['use_email'] . ' value="checked" />';
                 $type = 'Email Address';
                 $input = 'emailblurb';
-                $checked = $qp['useemail'];
-                $required = '<input type="checkbox" name="ruseemail" ' . $qp['ruseemail'] . ' value="checked" />';
+                $checked = $qp['use_email'];
+                $required = '<input type="checkbox" name="ruse_email" ' . $qp['ruse_email'] . ' value="checked" />';
                 $options = '<p class="description">Use this to collect the Payees email address.</p>';
                 break;
                 case 'message': 
