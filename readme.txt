@@ -4,7 +4,7 @@ Contributors: etalented
 Tags: paypal, stripe, worldpay, payment form, ecommence
 Requires at least: 4.0
 Tested up to: 4.9.8
-Stable tag: 1.4
+Stable tag: 1.4.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -77,6 +77,11 @@ Just follow these steps:
 6.  Remember to Save Changes
 
 == Changelog ==
+
+= 1.4.1 =
+*   Fixed email address field not showing to be required
+*   Fixed custom styles not being correctly applied
+*   Corrected incorrect links
 
 = 1.4 =
 *   Re-configuration of Admin Menus
