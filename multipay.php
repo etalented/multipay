@@ -28,7 +28,8 @@ function init() {
 
         add_action( 'wp_enqueue_scripts', 'multipay_scripts' );
         
-        add_action( 'wp_head', 'qp_head_css' );
+        add_action( 'wp_head', 'qp_head' );
+        add_action( 'wp_footer', 'qp_footer_style', 100 );
         add_action( 'init', 'qp_bootstrap' );
         add_action( 'wp_ajax_qp_validate_form', 'qp_validate_form_callback');
         add_action( 'wp_ajax_nopriv_qp_validate_form', 'qp_validate_form_callback');
@@ -1327,9 +1328,12 @@ function qp_generate_css() {
     return $code;   
 }
 
-function qp_head_css() {
+function qp_head() {
 	global $PaymentsAPI;
 	$PaymentsAPI->onHead();
+}
+
+function qp_footer_style() {
     $data = '<style type="text/css" media="screen">'."\r\n".qp_generate_css()."\r\n".'</style>';
     echo $data;
 }
