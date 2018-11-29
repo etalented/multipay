@@ -197,7 +197,7 @@ class MultiPay_Settings {
         <p><input type="submit" name="Default" class="button-primary" style="color: #FFF;" value="'.__('Update Currency','multipay').'" /></p>';
         $new .= wp_nonce_field("save_qp");
         $new .= '</form>
-        <div class="qpupgrade"><a href="?page=multipay/settings.php&tab=upgrade">
+        <div class="qpupgrade"><a href="admin.php?page=multipay-settings&tab=upgrade">
         <h3>'.__('Upgrade to Pro','multipay').'</h3>
         <p>'.__('Upgrading gets you multiple forms, more fields, autoresponder and the payment manager. All for just $10.','multipay').'</p>
         <p>'.__('Click to find out more','multipay').'</p>
@@ -489,7 +489,7 @@ class MultiPay_Settings {
                     <p><input type="text" name="couponbutton" value="' . $qp['couponbutton'] . '" /></p>
                     <p class="description">Coupon applied message:</p>
                     <p><input type="text" name="couponref" value="' . $qp['couponref'] . '" /></p>
-                    <p><a href="?page=multipay/settings.php&tab=coupon">Set coupon codes</a></p>';
+                    <p><a href="admin.php?page=multipay-settings&tab=coupon">Set coupon codes</a></p>';
                 } else {
                     $type = 'Coupons';
                     $input = '';
@@ -512,7 +512,7 @@ class MultiPay_Settings {
                 $type = 'Personal Details';
                 $input = 'addressblurb';
                 $checked = $qp['useaddress'];
-                $options = '<p><a href="?page=multipay/settings.php&tab=address">'.__('Personal details Settings','multipay').'</a></p>';
+                $options = '<p><a href="admin.php?page=multipay-settings&tab=address">'.__('Personal details Settings','multipay').'</a></p>';
                 break;
                 case 'slider';
                 if ($qppkey['authorised']) {
@@ -1063,7 +1063,7 @@ class MultiPay_Settings {
         <h2>'.__('Autoresponder Settings','multipay').'</h2>';
         echo $content;
         if ($qppkey['authorised']) {
-            echo '<p class="description">Note: The autoresponder only works if you collect an email address on the <a href="?page=multipay/settings.php&tab=settings">'.__('Form Settings</a>.','multipay').'</p>
+            echo '<p class="description">Note: The autoresponder only works if you collect an email address on the <a href="admin.php?page=multipay-settings&tab=settings">'.__('Form Settings</a>.','multipay').'</p>
             <p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="use_autoresponder"' . $auto['use_autoresponder'] . ' value="checked" /> '.__('Use Autoresponder.','multipay').'</p> 
             <p>'.__('From Name','multipay').' (<span class="description">Defaults to your <a href="'. get_admin_url().'options-general.php">Site Title</a> if left blank.</span>):<br>
             <input type="text" style="width:50%" name="fromname" value="' . $auto['fromname'] . '" /></p>
@@ -1081,11 +1081,11 @@ class MultiPay_Settings {
         </tr>
         <tr>
         <td>[firstname]</td>
-        <td>The registrants first name if you are using the <a href="?page=multipay/settings.php&tab=address">personal details</a> option.</td>
+        <td>The registrants first name if you are using the <a href="admin.php?page=multipay-settings&tab=address">personal details</a> option.</td>
         </tr>
         <tr>
         <td>[name]</td>
-        <td>The registrants first and last name if you are using the <a href="?page=multipay/settings.php&tab=address">personal details</a> option.</td>
+        <td>The registrants first and last name if you are using the <a href="admin.php?page=multipay-settings&tab=address">personal details</a> option.</td>
         </tr>
         <tr>
         <td>[reference]</td>
@@ -1118,7 +1118,7 @@ class MultiPay_Settings {
         </table>
         <p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="paymentdetails"' . $auto['paymentdetails'] . ' value="checked" /> '.__('Add payment details to the message','multipay').'</p>';
         } else {
-            echo '<p>'.__('The use the autoresponder','multipay').' <a href="?page=multipay/settings.php&tab=upgrade">'.__('Upgrade to Pro','multipay').'</a>. '.__('It\'s only $10','multipay').'.</p>
+            echo '<p>'.__('The use the autoresponder','multipay').' <a href="admin.php?page=multipay-settings&tab=upgrade">'.__('Upgrade to Pro','multipay').'</a>. '.__('It\'s only $10','multipay').'.</p>
             <p>'.__('Your buyers will still receive an email from the payment gateway provider (if applicable). The autoresponder give you the opportunity to send a personalised message to the buyer along with their order details.','multipay').'</p> ';
         }
         echo '<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="'.__('Save Changes','multipay').'" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="'.__('Reset','multipay').'" onclick="return window.confirm( \'Are you sure you want to reset the autoresponder?\' );"/></p>';
@@ -1453,8 +1453,7 @@ class MultiPay_Settings {
         <li>'.__('Update the settings','multipay').'</li>
         </ol>
         <p>'.__('When the form appears on your site there will be a','multipay') .' '. $payment['paypal_submit'] .__(' button.','multipay').'</p>
-        <p>'.__('This plugin is under new ownership and is now being actively maintained. Please raise your issues and bugs in the ','multipay').' <a href="https://wordpress.org/support/plugin/multipay" target="_blank">'.__('WordPress.org Support Forum','multipay').'</a>.</p>
-        <p>'.__('For more information on the PayPal In-Context Checkout visit the','multipay').' <a href="https://developer.paypal.com/docs/classic/express-checkout/in-context/">'.__('PayPal Developers Page','multipay').'</a>.</p>
+        <p>'.__('For more information on the PayPal In-Context Checkout visit the','multipay').' <a href="https://developer.paypal.com/docs/classic/express-checkout/in-context/" target="_blank">'.__('PayPal Developers Page','multipay').'</a>.</p>
         </div>
         </div>';
         echo $content;
@@ -1534,8 +1533,6 @@ class MultiPay_Settings {
         </ol>
         <p><b>Note:</b> You will also need to add an application. To do this select <b>Login with Amazon</b> form the dropdown top right and follow the on screen instructions. All you need is the name of your business, a descriotion and the URL of your Privacy page</p> 
         <p>'.__('When the form appears on your site there will be a','multipay') .' '. $payment['paypal_submit'] .__(' button.','multipay').'</p>
-        <p>'.__('This plugin is under new ownership and is now being actively maintained. Please raise your issues and bugs in the ','multipay').' <a href="https://wordpress.org/support/plugin/multipay" target="_blank">'.__('WordPress.org Support Forum','multipay').'</a>.</p>
-        <p>'.__('For more information on the PayPal In-Context Checkout visit the','multipay').' <a href="https://developer.paypal.com/docs/classic/express-checkout/in-context/">'.__('PayPal Developers Page','multipay').'</a>.</p>
         </div>
         </div>';
         echo $content;
@@ -1611,7 +1608,6 @@ class MultiPay_Settings {
             <li>'.__('Update the settings','multipay').'</li>
             </ol>
             <p>'.__('When the form appears on your site there will be a','multipay') .' '. $payment['stripe_submit'] .__(' button.','multipay').'</p>
-            <p>'.__('This plugin is under new ownership and is now being actively maintained. Please raise your issues and bugs in the ','multipay').' <a href="https://wordpress.org/support/plugin/multipay" target="_blank">'.__('WordPress.org Support Forum','multipay').'</a>.</p>
             </div>
             </div>';
         echo $content;
@@ -1675,7 +1671,6 @@ class MultiPay_Settings {
             <li>'.__('Update the settings','multipay').'</li>
             </ol>
             <p>'.__('When the form appears on your site there will be a','multipay') .' '. $payment['worldpay_submit'] .__(' button.','multipay').'</p>
-            <p>'.__('This plugin is under new ownership and is now being actively maintained. Please raise your issues and bugs in the ','multipay').' <a href="https://wordpress.org/support/plugin/multipay" target="_blank">'.__('WordPress.org Support Forum','multipay').'</a>.</p>
             </div>
             </div>';
         echo $content;

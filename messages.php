@@ -30,7 +30,7 @@ class MultiPay_Messages {
                             }
                             self::show_messages($tab);
                         } else {
-                            echo '<p>'.__('All payment details are saved to the database and you will receive an notification email of each payment','multipay').' '.__('To see all payments and be able to download the payment record you need to','multipay').' <a href="?page=multipay-settings&tab=upgrade">'.__('Upgrade to Pro','multipay').'</a>. '.__('It\'s only $10','multipay').'<p>';
+                            echo '<p>'.__('All payment details are saved to the database and you will receive an notification email of each payment','multipay').' '.__('To see all payments and be able to download the payment record you need to','multipay').' <a href="admin.php?page=multipay-settings&tab=upgrade">'.__('Upgrade to Pro','multipay').'</a>. '.__('It\'s only $10','multipay').'<p>';
                         }
                         ?>
                     </div>
