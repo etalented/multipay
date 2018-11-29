@@ -24,9 +24,13 @@ If you just want a simple payment form but not a full eCommerce site you are oft
 
 == Screenshots ==
 
-1. An example payment form
-2. The form creator page
-3. The autoresponder editor
+1. Example payment form
+2. Using Stripe as a payment option
+3. Configuring the form fields
+4. Configuring the form styling
+5. Configuring Mailchimp, cancel and thank you pages, error and validation messages
+6. Configuring an autoresponder
+7. With Pro, you get Multiple Forms, more Form Fields, Customer Autoresponders and Transaction Logs!
 
 == Installation ==
 
