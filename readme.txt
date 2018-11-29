@@ -4,7 +4,7 @@ Contributors: etalented
 Tags: paypal, stripe, worldpay, payment form, ecommence
 Requires at least: 4.0
 Tested up to: 4.9.8
-Stable tag: 1.3
+Stable tag: 1.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,7 +62,36 @@ Upgrade to Pro and at the bottom of the dashboard menu is a link called 'MultiPa
 = It's all gone wrong! =
 If it all goes wrong, just reinstall the plugin and start again. If you need help then please use the Support Forum.
 
+= How do I use Add to Mailchimp? =
+When a customer uses your form, you can add their email address to any List on Mailchimp. 
+Just follow these steps:
+1.  Enable and make required the Email Address field in the Form Settings tab in the MultiPay Settings
+2.  Open your List on Mailchimp
+3.  Go to Signup forms, then Embedded forms
+4.  In the "Copy/paste onto your site" section, you will find a URL that looks like this: `https://etalented.us15.list-manage.com/subscribe/post?u=1b8595fad6a4c50dde29f98c7&amp;id=c195bc34f7` - copy and paste this URL into a text editor such as Notepad
+5.  Go to the Processing tab in the MultiPay Settings, then copy and paste the correct part from the URL into the matching Mailchimp settings field using this template as a guide: `https://etalented.[Region].list-manage.com/subscribe/post?u=[User ID]&amp;id=[List ID]`
+6.  Remember to Save Changes
+
 == Changelog ==
+
+= 1.4 =
+*   Re-configuration of Admin Menus
+*   Added explanation for maximum quantity
+*   Removed "include postage and processing in the amount to pay" setting
+*   Removed Google onClick setting
+*   Removed currencies field
+*   Fixed display of form validation overlays - now they close automatically
+*   Fixed changing email address for confirmation message for non-upgrade version
+*   Fixed payment methods will go to thank you or cancelled URLs
+*   Fixed submit button position and size
+*   Fixed background image and colour display
+*   Fixed display of form borders
+*   Fixed form width options
+*   Fixed options field display and required
+*   Fixed amount field display
+*   Fixed reference field display
+*   Fixed email address required
+*   Fixed issue with activation of multiple fields in admin
 
 = 1.3 =
 *   Upgrade update

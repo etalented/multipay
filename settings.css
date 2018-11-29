@@ -30,3 +30,50 @@ table#sorting{width:100%;}
 .qpupgrade a {display:block;text-align: center;width: 100%;background: #8951A5;padding: 12px 6px;color: #FFF;margin: 0;border:4px solid #999;border-radius: 12px;text-decoration:none;font-size:240%;line-height:1em;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box;}
 .qpupgrade a:hover {color: #FFF;background: #343838;}
 .qpupgrade a span {font-size:50%;}
+
+
+#multipay>h1:first-child {
+    background-image: url(https://ps.w.org/multipay/assets/icon-128x128.png);
+    background-repeat: no-repeat;
+    background-size: 42px;
+    background-position: 0px 2px;
+    padding-left: 50px;
+}
+#multipay #poststuff #post-body.columns-2 {
+    margin-right: 320px;
+}
+#multipay #post-body.columns-2 #postbox-container-1 {
+    float: right;
+    margin-right: -320px;
+    width: 300px;
+}
+#multipay .box {
+    margin-top: 20px;
+    padding: .7em 1.5em 1em;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    background: #fff;
+}
+#multipay #poststuff .box h2 {
+    padding-left: 0;
+    padding-right: 0;
+}
+#multipay .rate {
+    display: inline-block;
+    top: -2px;
+    position: relative;
+    margin-left: 5px;
+}
+#multipay .rating-stars a {
+    text-decoration: none;
+}
+#multipay .box.rating h2 {
+    display: inline-block;
+}
+#multipay .box.github img {
+    height: 18px;
+}
+#multipay .byline {
+    text-align: center;
+    margin-top: 2em;
+}

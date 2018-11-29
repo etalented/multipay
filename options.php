@@ -36,7 +36,7 @@ function qp_get_stored_options($id) {
     $qp = get_option('qp_options'.$id);
     if(!is_array($qp)) $qp = array();
     $default = array(
-        'sort' => 'reference,amount,currency,quantity,stock,options,postage,processing,coupon,additionalinfo,address,slider,email,message,datepicker,terms,captcha,totals',
+        'sort' => 'reference,amount,quantity,stock,options,postage,processing,coupon,additionalinfo,address,slider,email,message,datepicker,terms,captcha,totals',
         'title' => 'Payment Form',
         'blurb' => 'Enter the payment details and submit',
         'inputreference' => 'Payment reference',
@@ -88,7 +88,7 @@ function qp_get_stored_options($id) {
         'termsblurb' => 'I agree to the Terms and Conditions',
         'termsurl' => home_url(),
         'termspage' => 'checked',
-        'quantitymaxblurb' => 'maximum of 99',
+        'quantitymaxblurb' => 'maximum of 10',
         'currencies' => 'USD,GBP,EUR',
         'useaddress' => false,
         'addressblurb' => 'Enter your details below',

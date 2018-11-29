@@ -3,44 +3,98 @@
 Plugin Name: MultiPay
 Plugin URI: https://wordpress.org/plugins/multipay/
 Description: A simple, single form payment gateway that connects to a range of vendors such as PayPal, Stripe and WorldPay. Let you customers choose how they pay.
-Version: 1.3
+Version: 1.4
 Author: etalented
 Author URI: https://etalented.co.uk/
 Text-domain: multipay
 */
 
-// Register the scripts we need
-function qp_shutdown() {
-    $error = error_get_last();
+init();
+
+function init() {
+
+     include_once dirname( __FILE__ ) . '/options.php';
+    // Frontend
+    if ( !is_admin() || (defined('DOING_AJAX') && DOING_AJAX) ) {
+
+        function qp_shutdown() {
+            $error = error_get_last();
+        }
+
+        register_shutdown_function('qp_shutdown');
+
+        add_shortcode( 'multipay', 'qp_loop' );
+        add_shortcode( 'qpreport', 'qp_report' );
+
+        add_action( 'wp_enqueue_scripts', 'multipay_scripts' );
+        
+        add_action( 'wp_head', 'qp_head_css' );
+        add_action( 'init', 'qp_bootstrap' );
+        add_action( 'wp_ajax_qp_validate_form', 'qp_validate_form_callback');
+        add_action( 'wp_ajax_nopriv_qp_validate_form', 'qp_validate_form_callback');
+        add_action( 'wp_ajax_qp_process_payment', 'qp_process_payment');
+        add_action( 'wp_ajax_nopriv_qp_process_express_checkout_payment', 'qp_process_express_checkout_payment');
+
+        $qp_end_loop = false;
+        $PaymentsAPI = false;
+        
+    // Admin
+    } else {
+        add_action( 'admin_menu', 'multipay_admin_menu', 9 );
+        add_action( 'admin_enqueue_scripts', 'multipay_admin_scripts' );
+        
+        include_once dirname( __FILE__ ) . '/settings.php';
+        include_once dirname( __FILE__ ) . '/messages.php';
+    }
 }
 
-register_shutdown_function('qp_shutdown');
+function multipay_scripts() {
+	global $PaymentsAPI;
 
-add_action('init', 'qp_register_scripts');
-/*
-	Add footer event to fire and include the javascript file only when needed
-*/
-//add_action('wp_footer','qp_display_scripts');
+	// Load payment module assets
+	foreach ( $PaymentsAPI->assets() as $asset ) {
+		switch ( $asset['type'] ) {
+			case 'css':
+				wp_register_style( $asset['name'], $asset['url'] );
+			break;
+			case 'script':
+				wp_register_script( $asset['name'], $asset['url'] );
+			break;
+		}
+	}
+    
+	wp_register_script( 'multipay', plugins_url( 'multipay.js', __FILE__ ), array( 'jquery', 'jquery-effects-core', 'jquery-ui-datepicker' ), false, true );
+    
+    wp_register_style( 'jquery-ui-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
+    wp_register_style( 'multipay-style', plugins_url( 'multipay.css', __FILE__ ), array( 'jquery-ui-style' ) );
+}
 
-add_shortcode( 'multipay', 'qp_loop' );
-add_shortcode( 'qpreport', 'qp_report' );
+function multipay_admin_scripts() {
+    wp_register_script( 'multipay-media', plugins_url( 'media.js', __FILE__ ), array( 'jquery', 'wp-color-picker', 'jquery-ui-sortable', 'jquery-ui-datepicker' ), false, true );
+    
+    wp_register_style( 'jquery-ui-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
+    wp_register_style( 'multipay-admin-style', plugins_url( 'settings.css', __FILE__ ), array( 'jquery-ui-style', 'wp-color-picker' ) );
+}
 
-add_filter( 'plugin_action_links', 'qp_plugin_action_links', 10, 2 );
+function multipay_admin_menu() {
+    add_menu_page( 'Multipay', 'Multipay', 'manage_options', 'multipay-messages', null, 'dashicons-cart' );
+    add_submenu_page( 'multipay-messages', __( 'Transactions', 'multipay' ),  __( 'Transactions', 'multipay' ), 'manage_options', 'multipay-messages', 'messages_page' );
+    add_submenu_page( 'multipay-messages', __( 'Settings', 'multipay' ),  __( 'Settings', 'multipay' ), 'manage_options', 'multipay-settings', 'settings_page' );
+}
 
-add_action( 'wp_enqueue_scripts','qp_enqueue_scripts' );
-add_action( 'wp_head', 'qp_head_css' );
-add_action( 'init', 'qp_bootstrap' );
-add_action( 'wp_ajax_qp_validate_form', 'qp_validate_form_callback');
-add_action( 'wp_ajax_nopriv_qp_validate_form', 'qp_validate_form_callback');
-add_action( 'wp_ajax_qp_process_payment', 'qp_process_payment');
-add_action( 'wp_ajax_nopriv_qp_process_express_checkout_payment', 'qp_process_express_checkout_payment');
+function settings_page() {
+    wp_enqueue_style( 'multipay-admin-style' );
+    wp_enqueue_script( 'multipay-media' );
+    wp_enqueue_media();
+    
+    MultiPay_Settings::output();
+}
 
-$qp_end_loop = false;
-$PaymentsAPI = false;
-
-require_once( plugin_dir_path( __FILE__ ) . '/options.php' );
-if (is_admin()) require_once( plugin_dir_path( __FILE__ ) . '/settings.php' );
-
+function messages_page() {
+    wp_enqueue_style( 'multipay-admin-style' );
+    
+    MultiPay_Messages::output();
+}
 
 function qp_bootstrap() {
 	global $PaymentsAPI;
@@ -71,39 +125,11 @@ function qp_bootstrap() {
 	if ($amazonapi['use_amazon'] == 'checked') $PaymentsAPI->load('amazon',$amazonapi);
 }
 
-function qp_register_scripts() {
-	wp_register_script('qp_script', plugins_url('multipay.js', __FILE__), array('jquery'), false, true);
-}
-
 function qp_display_scripts() {
 	global $qp_shortcode_exists;
 
 	if ($qp_shortcode_exists)
 		wp_print_scripts('qp_script');
-}
-
-function qp_enqueue_scripts() {
-	global $PaymentsAPI;
-
-	/*
-		Load payment module assets
-	*/
-	$i = 0;
-	foreach ($PaymentsAPI->assets() as $asset) {
-		switch ($asset['type']) {
-			case 'css':
-				wp_register_style($asset['name'],$asset['url']);
-			break;
-			case 'script':
-				wp_register_script($asset['name'],$asset['url']);
-			break;
-		}
-	}
-
-    wp_enqueue_style( 'qp_style',plugins_url('multipay.css', __FILE__));
-    wp_enqueue_script("jquery-effects-core");
-    wp_enqueue_script('jquery-ui-datepicker');
-    wp_enqueue_style ('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
 }
 
 function qp_validate_form_callback($degrade = false) {
@@ -275,11 +301,15 @@ function qp_formulate_v($atts,&$v, &$form = 'default', &$amount = '', &$id = '',
         if (isset($d['otheramount']) && isset($d['use_other_amount'])) {
 			if (strtolower($d['use_other_amount']) == 'true') $d['amount'] = $d['otheramount'];
 		} 
-        if ($qp['use_options'] && $qp['optionselector'] == 'optionscheckbox') {
-            $checks ='';
-            $arr = explode(",",$qp['optionvalues']);
-            foreach ($arr as $key) if ($d['option1_' . str_replace(' ','',$key)]) $checks .= $key . ', ';
-            $d['option1'] = rtrim( $checks , ', ' );
+        if ($qp['use_options']) {
+            if ($qp['optionselector'] == 'optionscheckbox') {
+                $checks ='';
+                $arr = explode(",",$qp['optionvalues']);
+                foreach ($arr as $key) if ($d['option1_' . str_replace(' ','',$key)]) $checks .= $key . ', ';
+                $v['option1'] = rtrim( $checks , ', ' );
+            } else {
+                $v['option1'] = $d['option1'];
+            }
         }
 
         $arr = array(
@@ -361,8 +391,8 @@ function qp_display_success($form, $tid, $data) {
 			if ($message[$i]['custom'] == $custom && $message[$i]['reference']) {
 				$message[$i]['custom'] = 'Paid';
                 $message[$i]['tid'] =  $tid;
-				$auto = qp_get_stored_autoresponder($item);
-				$send = qp_get_stored_send($item);
+				$auto = qp_get_stored_autoresponder($form);
+				$send = qp_get_stored_send($form);
 				qp_check_coupon($message[$i]['coupon'],$item);
 				$values = array(
 					'reference' => $message[$i]['reference'],
@@ -465,8 +495,8 @@ function qp_loop($atts) {
 		Loop through all of the assets we're using
 	*/
 		
-    wp_enqueue_script( 'qp_script' );
-	wp_enqueue_style( 'qp_style' );
+    wp_enqueue_script( 'multipay' );
+	wp_enqueue_style( 'multipay-style' );
 	
 	foreach ($PaymentsAPI->assets() as $asset) {
 		switch ($asset['type']) {
@@ -606,7 +636,7 @@ function qp_display_form($values, $errors, $form, $attr = '') {
     $content .= '<div class="qp-style '.$form.'"><div id="'.$style['border'].'">';
     $content .= '<form id="frmPayment'.$t.'" name="frmPayment'.$t.'" method="post" action="">';
 	
-    if (count($errors) > 0) {
+    if (!empty($errors) && count($errors) > 0) {
         $content .= "<script type='text/javascript' language='javascript'>document.querySelector('#qp_reload').scrollIntoView();</script>";
 		"<h2 class='qp-header' id='qp_reload' style='color:".$style['error-colour'].";'>" . $send['errortitle'] . "</h2>        
         <p class='qp-blurb' style='color:".$style['error-colour'].";'>" . $send['errorblurb'] . "</p>";
@@ -737,11 +767,12 @@ function qp_display_form($values, $errors, $form, $attr = '') {
                     } else {
                         if ($values['explodepay']) {
                             $ref = explode(",",$values['amount']);
-                            if($qp['selector'] == 'dropdown') {
+                            if($qp['amtselector'] == 'amtdropdown') {
                                 // add combobox script
                                 if ($qp['combobox']) {
 									array_push($ref,$qp['comboboxword']);
-									$content .= qp_dropdown($ref,$values,'amount','<div id="otheramount"><input type="text" label="'.$qp['comboboxlabel'].'" onfocus="qpclear(this, \'' . $qp['comboboxlabel'] . '\')" onblur="qprecall(this, \'' . $qp['comboboxlabel'] . '\' )" value="'.$values['otheramount'].'" name="otheramount" style="display: none;" /><input type="hidden" name="use_other_amount" value="false" /></div>');
+                                    $content .= qp_dropdown($ref,$values,'amount');
+                                    $content .= '<div id="otheramount"><input type="text" label="'.$qp['comboboxlabel'].'" onfocus="qpclear(this, \'' . $qp['comboboxlabel'] . '\')" onblur="qprecall(this, \'' . $qp['comboboxlabel'] . '\' )" value="'.$values['otheramount'].'" name="otheramount" style="display: none;" /><input type="hidden" name="use_other_amount" value="false" /></div>';
                                 } else {
 									$content .= qp_dropdown($ref,$values,'amount');
 								}
@@ -756,7 +787,7 @@ function qp_display_form($values, $errors, $form, $attr = '') {
 									$checked='';
                                 }
                                 if ($qp['combobox']) {
-                            $content .=  '<input type="radio" id="qptiddles" style="margin:0; padding: 0; border:none;width:auto;" name="amount" value="otheramount" ' . $checked . '>&nbsp;<input type="text" style="width:80%;" value ="'.$values['otheramount'].'" name="otheramount" onfocus="qpclear(this, \'' . $qp['comboboxlabel'] . '\')" onblur="qprecall(this, \'' . $qp['comboboxlabel'] . '\' )" /><input type="hidden" name="use_other_amount" value="false" />';
+                                    $content .=  '<input type="radio" id="qptiddles" style="margin:0; padding: 0; border:none;width:auto;" name="amount" value="otheramount" ' . $checked . '> '.$qp['comboboxword'].'<input type="text" style="width:80%;" value ="'.$values['otheramount'].'" name="otheramount" onfocus="qpclear(this, \'' . $qp['comboboxlabel'] . '\')" onblur="qprecall(this, \'' . $qp['comboboxlabel'] . '\' )" /><input type="hidden" name="use_other_amount" value="false" />';
                                 }
                             
                             }
@@ -781,8 +812,8 @@ function qp_display_form($values, $errors, $form, $attr = '') {
                     foreach ($arr as $item) {
                         $checked = '';
                         if ($values['option1'] == $item) $checked = 'checked';
-                        if ($item === reset($arr)) $content .= '<input type="radio" style="margin:0; padding: 0; border: none" name="option1" value="' .  $item . '" id="' .  $item . '" checked><label for="' .  $item . '"> ' .  $item . '</label>'.$br;
-                        else $content .=  '<input type="radio" style="margin:0; padding: 0; border: none" name="option1" value="' .  $item . '" id="' .  $item . '" ' . $checked . '><label for="' .  $item . '"> ' .  $item . '</label>'.$br;
+                        if ($item === reset($arr)) $content .= '<label><input type="radio" style="margin:0; padding: 0; border: none" name="option1" value="' .  $item . '" id="' .  $item . '" checked> ' .  $item . '</label>'.$br;
+                        else $content .=  '<label><input type="radio" style="margin:0; padding: 0; border: none" name="option1" value="' .  $item . '" id="' .  $item . '" ' . $checked . '> ' .  $item . '</label>'.$br;
                     }
                     $content .= '</p>';
                 }
@@ -847,7 +878,7 @@ function qp_display_form($values, $errors, $form, $attr = '') {
             case 'address':
             if ($qp['useaddress']) {
                 $content .= '<p>' . $qp['addressblurb'] . '</p>';
-                $arr = array('firstname','lastname','address1','address2','city','state','zip','country','night_phone_b');
+                $arr = array('firstname','lastname','email','address1','address2','city','state','zip','country','night_phone_b');
                 foreach($arr as $item)
                     if ($address[$item]) {
                     $required = ($address['r'.$item] && !$errors[$item] ? ' class="required" ' : '');
@@ -993,7 +1024,9 @@ function qp_verify_form(&$v,&$errors,$form) {
     $address = qp_get_stored_address($form);
     $check = preg_replace ( '/[^.,0-9]/', '', $v['amount']);
     $arr = array('amount','reference','quantity','stock','email','yourmessage');
-	
+    
+    //die(json_encode(compact('qp', 'v')));
+    
     foreach ($arr as $item) $v[$item] = filter_var($v[$item], FILTER_SANITIZE_STRING);
 	
 	if ($qp['use_quantity']) {
@@ -1027,7 +1060,7 @@ function qp_verify_form(&$v,&$errors,$form) {
     if($qp['useterms'] && !$v['termschecked']) $errors['useterms'] = 'error';
     
     if($qp['useaddress']) {
-        $arr = array('firstname','lastname','address1','address2','city','state','zip','country','night_phone_b');
+        $arr = array('firstname','lastname', 'email','address1','address2','city','state','zip','country','night_phone_b');
         foreach ($arr as $item) {
             $v[$item] = filter_var($v[$item], FILTER_SANITIZE_STRING);
             if ($address['r'.$item] && ($v[$item] == $address[$item] || empty($v[$item]))) $errors[$item] = 'error';
@@ -1039,6 +1072,29 @@ function qp_verify_form(&$v,&$errors,$form) {
     
     if ($qp['use_message'] && $qp['ruse_message'] && ($v['yourmessage'] == $qp['messagelabel'] || empty($v['yourmessage'])))
         $errors['use_message'] = 'error';
+        
+    if ($qp['useemail'] && $qp['ruseemail'] && ($v['email'] == $qp['emailblurb'] || empty($v['email'])))
+        $errors['email'] = 'error';
+        
+    if ($qp['ruse_options']) {
+        $hasOptions = false;
+        $keys = array_keys($v);
+        foreach ($keys as $k) {
+            if (strpos($k, 'option1') === 0) {
+                $hasOptions = true;
+                break;
+            }
+        }
+        
+        if (!$hasOptions) {
+            $optionValues = explode(',', $qp['optionvalues']);
+            foreach ($optionValues as $item) {
+                $errors['option1_'.str_replace(' ','',$item)] = 'error';
+            }
+            $errors['option1'] = 'error';
+        }
+    }
+        
     $errors = array_filter($errors);
     return (count($errors) == 0);
 }
@@ -1106,7 +1162,7 @@ function qp_process_form($values,$form,$module, $qp_key) {
     
     update_option('qp_messages'.$form,$qp_messages);
 
-    if (isset($send['mailchimpuser']) && $send['mailchimpuser'] && $values['email'])
+    if (isset($send['mailchimpregion']) && isset($send['mailchimpuser']) && $send['mailchimpregion'] && $send['mailchimpuser'] && $values['email'])
         $content .= qp_mailchimp($values,$send);
 
 	return $content;
@@ -1247,9 +1303,9 @@ function qp_generate_css() {
     
     $couponbutton = ".qp-style #couponsubmit, .qp-style #couponsubmit:hover{".$submitwidth."color:".$style['coupon-colour'].";background:".$style['coupon-background'].";border:".$style['submit-border'].";".$submitfont.";font-size: inherit;margin: 3px 0px 7px;padding: 6px;text-align:center;}";
     if ($style['border']<>'none') $border =".qp-style #".$style['border'].", .qp_payment_modal_content {border:".$style['form-border'].";}";
-    if ($style['background'] == 'white') {$bg = "background:#FFF";$background = ".qp-style div, .qp_payment_modal_content {background:#FFF;}";}
-    if ($style['background'] == 'color') {$background = ".qp-style div, .qp_payment_modal_content {background:".$style['backgroundhex'].";}";$bg = "background:".$style['backgroundhex'].";";}
-    if ($style['backgroundimage']) $background = ".qp-style #".$style['border']." {background: url('".$style['backgroundimage']."');}";
+    if ($style['background'] == 'white') {$bg = "background-color:#FFF";$background = ".qp-style div, .qp_payment_modal_content {background-color:#FFF;}";}
+    if ($style['background'] == 'color') {$background = ".qp-style div, .qp_payment_modal_content {background-color:".$style['backgroundhex'].";}";$bg = "background-color:".$style['backgroundhex'].";";}
+    if ($style['backgroundimage']) $background = ".qp-style #".$style['border']." {background-image: url('".$style['backgroundimage']."');background-size: cover;background-position:center;}";
     $formwidth = preg_split('#(?<=\d)(?=[a-z%])#i', $style['width']);
     if (!isset($formwidth[1])) $formwidth[1] = 'px';
     if ($style['widthtype'] == 'pixel') $width = $formwidth[0].$formwidth[1];
@@ -1278,14 +1334,6 @@ function qp_head_css() {
     echo $data;
 }
 
-function qp_plugin_action_links($links, $file ) {
-    if ( $file == plugin_basename( __FILE__ ) ) {
-        $qp_links = '<a href="'.get_admin_url().'options-general.php?page=multipay/settings.php">'.__('Settings').'</a>';
-        array_unshift( $links, $qp_links );
-    }
-    return $links;
-}
-
 function qp_report($atts) {
     extract(shortcode_atts(array( 'form' =>''), $atts));
     return qp_messagetable($form,'');
@@ -1300,7 +1348,8 @@ function qp_messagetable ($form,$email) {
     $address = qp_get_stored_address($form);
     $c = qp_currency ($form);
     $showthismany = '9999';
-    $content = $padding = $count = $arr = '';
+    $dashboard = $table_content = $table = $padding = $arr = '';
+    $count = 0;
     if ($messageoptions['messageqty'] == 'fifty') $showthismany = '50';
     if ($messageoptions['messageqty'] == 'hundred') $showthismany = '100';
     $$messageoptions['messageqty'] = "checked";
@@ -1317,29 +1366,31 @@ function qp_messagetable ($form,$email) {
     
     
     if (!$email) $dashboard = '<div class="wrap"><div id="qp-widget">';
-    else $padding = 'cellpadding="5"';      
-    $dashboard .= '<table cellspacing="0" '.$padding.'><tr>';
-    if (!$email) $dashboard .= '<th></th>';
-    $dashboard .= '<th style="text-align:left">Date Sent</th>';
+    else $padding = 'cellpadding="5"';
+    
+    $table .= '<table cellspacing="0" '.$padding.'><tr>';
+    if (!$email) $table .= '<th></th>';
+    
+    $table .= '<th style="text-align:left">Date Sent</th>';
     foreach (explode( ',',$options['sort']) as $name) {
         $title='';
         switch ( $name ) {
-            case 'reference': $dashboard .= '<th style="text-align:left">'.$options['inputreference'].'</th>';break;
-            case 'quantity': $dashboard .= '<th style="text-align:left">'.$options['quantitylabel'].'</th>';break;
-            case 'amount': $dashboard .= '<th style="text-align:left">'.$options['inputamount'].'</th>';break;
-            case 'stock': if ($options['use_stock']) $dashboard .= '<th style="text-align:left">'.$options['stocklabel'].'</th>';break;
-            case 'options': if ($options['use_options']) $dashboard .= '<th style="text-align:left">'.$options['optionlabel'].'</th>';break;
-            case 'coupon': if ($options['usecoupon']) $dashboard .= '<th style="text-align:left">'.$options['couponblurb'].'</th>';break;
-            case 'email': if ($options['useemail']) $dashboard .= '<th style="text-align:left">'.$options['emailblurb'].'</th>';break;
-            case 'message': if ($options['use_message']) $dashboard .= '<th style="text-align:left:max-width:20%;">'.$options['messagelabel'].'</th>';break;
-            case 'datepicker': if ($options['use_datepicker']) $dashboard .= '<th style="text-align:left:max-width:20%;">'.$options['datepickerlabel'].'</th>';break;
+            case 'reference': $table .= '<th style="text-align:left">'.$options['inputreference'].'</th>';break;
+            case 'quantity': $table .= '<th style="text-align:left">'.$options['quantitylabel'].'</th>';break;
+            case 'amount': $table .= '<th style="text-align:left">'.$options['inputamount'].'</th>';break;
+            case 'stock': if ($options['use_stock']) $table .= '<th style="text-align:left">'.$options['stocklabel'].'</th>';break;
+            case 'options': if ($options['use_options']) $table .= '<th style="text-align:left">'.$options['optionlabel'].'</th>';break;
+            case 'coupon': if ($options['usecoupon']) $table .= '<th style="text-align:left">'.$options['couponblurb'].'</th>';break;
+            case 'email': if ($options['useemail']) $table .= '<th style="text-align:left">'.$options['emailblurb'].'</th>';break;
+            case 'message': if ($options['use_message']) $table .= '<th style="text-align:left:max-width:20%;">'.$options['messagelabel'].'</th>';break;
+            case 'datepicker': if ($options['use_datepicker']) $table .= '<th style="text-align:left:max-width:20%;">'.$options['datepickerlabel'].'</th>';break;
         }
     }
     if ($messageoptions['showaddress']) {
-        $arr = array('firstname','lastname','address1','address2','city','state','zip','country','night_phone_b');
-        foreach ($arr as $item) $dashboard .= '<th style="text-align:left">'.$address[$item].'</th>';
+        $arr = array('firstname','lastname','email','address1','address2','city','state','zip','country','night_phone_b');
+        foreach ($arr as $item) $table .= '<th style="text-align:left">'.$address[$item].'</th>';
     }
-    $dashboard .= '<th>'.__('Payment','multipay').'</th>
+    $table .= '<th>'.__('Payment','multipay').'</th>
     <th>'.__('Merchant','multipay').'</th>
     <th>'.__('Transaction ID','multipay').'</th>
     </tr>';
@@ -1347,8 +1398,7 @@ function qp_messagetable ($form,$email) {
         $i=count($message) - 1;
         foreach(array_reverse( $message ) as $value) {
             if ($count < $showthismany ) {
-                if ($value['sentdate']) $report = 'messages';
-                $content .= qp_messagecontent ($form,$value,$options,$c,$messageoptions,$address,$arr,$i,$email);
+                $table_content .= qp_messagecontent ($form,$value,$options,$c,$messageoptions,$address,$arr,$i,$email);
                 $count = $count+1;
                 $i--;
             }
@@ -1357,15 +1407,17 @@ function qp_messagetable ($form,$email) {
         $i=0;
         foreach($message as $value) {
             if ($count < $showthismany ) {
-                if ($value['sentdate']) $report = 'messages';
-                $content .= qp_messagecontent ($form,$value,$options,$c,$messageoptions,$address,$arr,$i,$email);
+                $table_content .= qp_messagecontent ($form,$value,$options,$c,$messageoptions,$address,$arr,$i,$email);
                 $count = $count+1;
                 $i++;
             }
         }
-    }	
-    if ($report) $dashboard .= $content.'</table>';
-    else $dashboard .= '</table><p>'.__('No payments found','multipay').'</p>';
+    }
+    
+    $table .= $table_content.'</table>';
+    
+    if ($table_content) $dashboard .= $table;
+    else $dashboard .= '<p>'.__('No payments found','multipay').'</p>';
     
     for ($i=1; $i<=$coupon['couponnumber']; $i++) {
         if ($coupon['qty'.$i] > 0) $coups .= '<p>'.$coupon['code'.$i].' - '.$coupon['qty'.$i].'</p>';
@@ -1391,8 +1443,8 @@ function qp_messagecontent ($form,$value,$options,$c,$messageoptions,$address,$a
                 if ($options['stocklabel'] == $value['stocklabel']) $value['stocklabel']='';
                 $content .= '<td>'.$value['stocklabel'].'</td>';}break;
             case 'options': if ($options['use_options']) {
-                if ($options['optionlabel'] == $value['optionlabel']) $value['optionlabel']='';
-                $content .= '<td>'.$value['optionlabel'].'</td>';}break;
+                if ($options['optionlabel'] == $value['optionlabel']) $value['option1']='';
+                $content .= '<td>'.$value['option1'].'</td>';}break;
             case 'coupon': if ($options['usecoupon']) {
                 if ($options['couponblurb'] == $value['couponblurb']) $value['couponblurb']='';
                 $content .= '<td>'.$value['couponblurb'].'</td>';}break;
@@ -1408,7 +1460,7 @@ function qp_messagecontent ($form,$value,$options,$c,$messageoptions,$address,$a
         }
     }
     if ($messageoptions['showaddress']) {
-        $arr = array('firstname','lastname','address1','address2','city','state','zip','country','night_phone_b');
+        $arr = array('firstname','lastname','email','address1','address2','city','state','zip','country','night_phone_b');
         foreach ($arr as $item) {
             if ($value[$item] == $address[$item]) $value[$item] = '';
             $content .= '<td>'.$value[$item].'</td>';
@@ -1563,15 +1615,25 @@ function qp_create_user($values) {
 }
         
 function qp_mailchimp($values,$send) {
-    $content = '<form action="http://mailchimp.us8.list-manage.com/subscribe/post" method="POST" id="mailchimpsubmit">
-    <input type="hidden" name="u" value="'.$send['mailchimpuser'].'">
-    <input type="hidden" name="id" value="'.$send['mailchimpid'].'">
-    <input type="hidden" name="MERGE0" id="MERGE0" value='.$values['email'].'>
-    <input type="hidden" name="FNAME" id="FNAME" value='.$values['firstname'].'>
-    <input type="hidden" name="LNAME" id="LNAME" value='.$values['lastname'].'>
-    </form>
-    <script language="JavaScript">document.getElementById("mailchimpsubmit").submit();</script>';
-    return $content;
+    $http_query = http_build_query([
+        'u' => $send['mailchimpuser'],
+        'id' => $send['mailchimpid'],
+        'EMAIL' => $values['email'],
+        'FNAME' => $values['firstname'],
+        'LNAME' => $values['lastname'],
+    ]);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'http://mailchimp.'.$send['mailchimpregion'].'.list-manage.com/subscribe/post');
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $http_query);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        "content-type: application/x-www-form-urlencoded"
+    ));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_exec($ch);
+    curl_close($ch);
+    return '';
 }
 
 add_action( 'template_redirect', 'qp_upgrade_ipn' );
@@ -1656,4 +1718,8 @@ function qp_upgrade_ipn() {
         wp_mail($email,'MultiPay Plugin Authorisation Key',$message,$headers);
     }
     exit();
+}
+
+function qp_admin_notice($message) {
+    if (!empty( $message)) echo '<div class="updated"><p>'.$message.'</p></div>';
 }

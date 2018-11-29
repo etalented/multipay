@@ -20,13 +20,9 @@ jQuery(document).ready(function() {
 
 			qp_do_validation(form,'paypal',function(data) {
 				
-				btn.click(function() {
-					qp_close_modal();
-					
-					paypal.checkout.initXO();
-					
-					paypal.checkout.startFlow(data.data.token);
-				})
+				qp_close_modal();
+				paypal.checkout.initXO();
+				paypal.checkout.startFlow(data.data.token);
 				
 					
 			},function(e) {
