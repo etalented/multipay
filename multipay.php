@@ -636,7 +636,7 @@ function qp_display_form($values, $errors, $form, $attr = '') {
     $content .= '<div class="qp-style '.$form.'"><div id="'.$style['border'].'">';
     $content .= '<form id="frmPayment'.$t.'" name="frmPayment'.$t.'" method="post" action="">';
 	
-    if (count($errors) > 0) {
+    if (!empty($errors) && count($errors) > 0) {
         $content .= "<script type='text/javascript' language='javascript'>document.querySelector('#qp_reload').scrollIntoView();</script>";
 		"<h2 class='qp-header' id='qp_reload' style='color:".$style['error-colour'].";'>" . $send['errortitle'] . "</h2>        
         <p class='qp-blurb' style='color:".$style['error-colour'].";'>" . $send['errorblurb'] . "</p>";
