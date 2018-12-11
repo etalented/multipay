@@ -78,7 +78,7 @@ function multipay_admin_scripts() {
 }
 
 function multipay_admin_menu() {
-    add_menu_page( 'Multipay', 'Multipay', 'manage_options', 'multipay-messages', null, 'dashicons-cart' );
+    add_menu_page( 'MultiPay', 'MultiPay', 'manage_options', 'multipay-messages', null, 'dashicons-cart' );
     add_submenu_page( 'multipay-messages', __( 'Transactions', 'multipay' ),  __( 'Transactions', 'multipay' ), 'manage_options', 'multipay-messages', 'messages_page' );
     add_submenu_page( 'multipay-messages', __( 'Settings', 'multipay' ),  __( 'Settings', 'multipay' ), 'manage_options', 'multipay-settings', 'settings_page' );
 }
