@@ -1,7 +1,7 @@
-=== Stripe, PayPal and WorldPay payments in one combined form ===
+=== MultiPay ===
 
 Contributors: etalented
-Tags: paypal, stripe, worldpay, payment form, ecommence
+Tags: paypal, stripe, worldpay, ecommerce, e-commerce, sales, sell, store, payments
 Requires at least: 4.0
 Tested up to: 5.0
 Stable tag: 1.4.1
@@ -16,21 +16,21 @@ Just want to take payments online? You don't need WooCommerce! With MultiPay you
 
 Built to integrate seamlessly into your existing WordPress site, MultiPay allows store owners to easily receive payments from customers.
 
-#### SELL ANYTHING
+### SELL ANYTHING
 
 MultiPay, not a complex eCommerce platform like WooCommerce, but your **eCommerce companion** to help you sell products and services in all different shapes and sizes.
 
 Perhaps you would like to sell personalized t-shirts in different sizes and colors, or take deposits for different beauty treatments? It's all possible with MultiPay.
 
-#### MULTIPLE PAYMENT OPTIONS
+### MULTIPLE PAYMENT OPTIONS
 
 With MultiPay you can receive payments via PayPal, Stripe and WorldPay - all of them together, or just the one.
 
-#### SHIPPPING, DATE SELECTION, COUPONS...
+### SHIPPPING, DATE SELECTION, COUPONS...
 
 MultiPay gives you many of the advanced features of an eCommerce platform, in a simple, easy to use plugin. Offer free shipping, flat rate shipping or make real-time calculations. Allow your customers to choose the date on which they would like to receive a product or service. You can even support your marketing campaigns with the use of discount coupons or vouchers.
 
-#### YOUR DESIGN
+### YOUR DESIGN
 
 Multipay is highly configurable. You can customize the design of your forms, change the feedback messages, and even send confirmation emails to your customers.
 
