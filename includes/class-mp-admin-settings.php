@@ -873,40 +873,73 @@ class MP_Admin_Settings {
     // Processing Settings and Messages
     public static function send_page($form) {
         self::change_form_update($form);
-        if( isset( $_POST['Submit']) && check_admin_referer("save_qp")) {
-            $options = array(
-                'customurl',
-                'cancelurl',
-                'thanksurl',
-                'combine',
-                'mailchimpregion',
-                'mailchimpuser',
-                'mailchimpid',
-                'errortitle',
-                'errorblurb',
-                'validating',
-                'waiting',
-                'failuretitle',
-                'failureblurb',
-                'failureanchor',
-                'pendingtitle',
-                'pendingblurb',
-                'pendinganchor',
-                'confirmationtitle',
-                'confirmationblurb',
-                'confirmationanchor',
-            );
-            foreach ($options as $item) {
+        $default_options = MP()->get_send_defaults();
+        $existing_options = get_option('qp_send'.$form);
+        $processing_options = array(
+            'customurl',
+            'cancelurl',
+            'thanksurl',
+            'combine',
+            'mailchimpregion',
+            'mailchimpuser',
+            'mailchimpid',
+        );
+        $messages_options = array(
+            'errortitle',
+            'errorblurb',
+            'validating',
+            'waiting',
+            'failuretitle',
+            'failureblurb',
+            'failureanchor',
+            'pendingtitle',
+            'pendingblurb',
+            'pendinganchor',
+            'confirmationtitle',
+            'confirmationblurb',
+            'confirmationanchor',
+        );
+        
+        // Processing update
+        if( isset( $_POST['processing_submit']) && check_admin_referer("processing_save")) {
+            foreach ($processing_options as $item) {
                 $send[$item] = stripslashes( $_POST[$item]);
                 $send[$item] = filter_var($send[$item],FILTER_SANITIZE_STRING);
             }
-            update_option('qp_send'.$form, $send);
-            MP()->admin_notice(__('The submission settings have been updated','multipay'));
+            update_option('qp_send'.$form,  wp_parse_args( $send, $existing_options ));
+            MP()->admin_notice(__('The processing settings have been updated','multipay'));
         }
-        if( isset( $_POST['Reset']) && check_admin_referer("save_qp")) {
-            delete_option('qp_send'.$form);
-            MP()->admin_notice(__('The submission settings have been reset','multipay'));
+        
+        // Messages update
+        if( isset( $_POST['messages_submit']) && check_admin_referer("messages_save")) {
+            foreach ($messages_options as $item) {
+                $send[$item] = stripslashes( $_POST[$item]);
+                $send[$item] = filter_var($send[$item],FILTER_SANITIZE_STRING);
+            }
+            update_option('qp_send'.$form,  wp_parse_args( $send, $existing_options ));
+            MP()->admin_notice(__('The messages settings have been updated','multipay'));
         }
+        
+        // Reset processing options
+        if( isset( $_POST['processing_reset']) && check_admin_referer("processing_save")) {
+            $reset_options = array();
+            foreach ($processing_options as $item) {
+                $reset_options[$item] = $default_options[$item];
+            }
+            update_option('qp_send'.$form,  wp_parse_args( $reset_options, $existing_options ));
+            MP()->admin_notice(__('The processing settings have been reset','multipay'));
+        }
+        
+        // Reset messages options
+        if( isset( $_POST['messages_reset']) && check_admin_referer("messages_save")) {
+            $reset_options = array();
+            foreach ($messages_options as $item) {
+                $reset_options[$item] = $default_options[$item];
+            }
+            update_option('qp_send'.$form,  wp_parse_args( $reset_options, $existing_options ));
+            MP()->admin_notice(__('The processing settings have been reset','multipay'));
+        }
+        
         $qp_setup = MP()->get_stored_setup();
         $form = $qp_setup['current'];
         $newpage = $customurl = '';
@@ -917,16 +950,16 @@ class MP_Admin_Settings {
             $send['confirmemail'] = get_bloginfo('admin_email');
         }
 
-        $content = '<form action="" method="POST"><div class="qp-settings"><div class="qp-options">
+        $content = self::change_form($qp_setup);
+        $content .= '<div class="qp-settings">
+        <div class="qp-options"><form method="post" action="">
         <h2 style="color:#B52C00">'.__('Processing','multipay').'</h2>';
-        $content .= self::change_form($qp_setup);
         $content .= '<h2>'.__('Cancel and Thank you pages','multipay').'</h2>
         <p>'.__('If you leave these blank the merchant will return the user to the current page.','multipay').'</p>
         <p>'.__('URL of cancellation page','multipay').'</p>
         <input type="text" style="width:100%" name="cancelurl" value="' . $send['cancelurl'] . '" />
         <p>'.__('URL of thank you page','multipay').'</p>
         <input type="text" style="width:100%" name="thanksurl" value="' . $send['thanksurl'] . '" />
-
         <h2>'.__('Add to Mailchimp','multipay').'</h2>
         <p>'.__('This will only work if you are collecting names and email addresses','multipay').'</p>
         <p>'.__('Your Mailchimp Region:
@@ -936,9 +969,10 @@ class MP_Admin_Settings {
         <p>'.__('The Mailchimp List ID:
         <input type="text" style="width:100%" name="mailchimpid" value="' . $send['mailchimpid'] . '" />','multipay').'</p>
         <p><a href="https://wordpress.org/plugins/multipay/#faq" target="_blank">'.__("Visit the FAQ to find out what to put here",'multipay').'</a></p>
-        <p>'.__('<input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the form settings?\' );"/>','multipay').'</p>
-        </div>
-        <div class="qp-options">
+        <p>'.__('<input type="submit" name="processing_submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="processing_reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the processing fields?\' );"/>','multipay').'</p>';
+        $content .= wp_nonce_field("processing_save");
+        $content .= '</form></div>
+        <div class="qp-options"><form method="post" action="">
         <h2 style="color:#B52C00">'.__('Error and Validation Messages','multipay').'</h2>
         <table>
         <tr>
@@ -1000,10 +1034,9 @@ class MP_Admin_Settings {
         <td><input type="text" style="" name="confirmationanchor" value="' . $send['confirmationanchor'] . '" /></td>
         </tr>
         </table>
-        <p>'.__('<input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the error message?\' );"/>','multipay').'</p>
-        </div></div>';
-        $content .= wp_nonce_field("save_qp");
-        $content .= '</form>';
+        <p>'.__('<input type="submit" name="messages_submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="messages_reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the messages fields?\' );"/>','multipay').'</p>';
+        $content .= wp_nonce_field("messages_save");
+        $content .= '</form></div></div>';
 
         echo $content;
     }

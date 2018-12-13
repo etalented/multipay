@@ -395,10 +395,8 @@ final class MultiPay {
         return $qp;
     }
     
-    public function get_stored_send($id) {
-        $send = get_option('qp_send'.$id);
-        if(!is_array($send)) $send = array();
-        $default = array(
+    public function get_send_defaults() {
+        $defaults = array(
             'cancelurl' => false,
             'thanksurl' => false,
             'errortitle' => 'Oops, got a problem here',
@@ -418,7 +416,13 @@ final class MultiPay {
             'confirmationamount' => 'Amount Paid:',
             'confirmationanchor' => 'Continue Shopping',
         );
-        $send = array_merge($default, $send);
+        return $defaults;
+    }
+    
+    public function get_stored_send($id) {
+        $send = get_option('qp_send'.$id);
+        if(!is_array($send)) $send = array();
+        $send = array_merge($this->get_send_defaults(), $send);
         return $send;
     }
 
