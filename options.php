@@ -107,11 +107,9 @@ function qp_get_stored_options($id) {
     $qp = array_merge($default, $qp);
     return $qp;
 }
-
-function qp_get_stored_send($id) {
-    $send = get_option('qp_send'.$id);
-    if(!is_array($send)) $send = array();
-    $default = array(
+    
+function qp_get_send_defaults() {
+    $defaults = array(
         'cancelurl' => false,
         'thanksurl' => false,
         'errortitle' => 'Oops, got a problem here',
@@ -131,7 +129,13 @@ function qp_get_stored_send($id) {
         'confirmationamount' => 'Amount Paid:',
         'confirmationanchor' => 'Continue Shopping',
     );
-    $send = array_merge($default, $send);
+    return $defaults;
+}
+
+function qp_get_stored_send($id) {
+    $send = get_option('qp_send'.$id);
+    if(!is_array($send)) $send = array();
+    $send = array_merge(qp_get_send_defaults(), $send);
     return $send;
 }
 
