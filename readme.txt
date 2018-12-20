@@ -1,7 +1,7 @@
-=== Stripe, PayPal and WorldPay payments in one combined form ===
+=== MultiPay ===
 
 Contributors: etalented
-Tags: paypal, stripe, worldpay, payment form, ecommence
+Tags: paypal, stripe, worldpay, ecommerce, e-commerce, sales, sell, store, payments
 Requires at least: 4.0
 Tested up to: 5.0.2
 Requires PHP: 5.6

@@ -3,7 +3,7 @@
 Plugin Name: MultiPay
 Plugin URI: https://wordpress.org/plugins/multipay/
 Description: A simple, single form payment gateway that connects to a range of vendors such as PayPal, Stripe and WorldPay. Let you customers choose how they pay.
-Version: 1.4.1
+Version: 1.4.2
 Author: etalented
 Author URI: https://etalented.co.uk/
 Text-domain: multipay
