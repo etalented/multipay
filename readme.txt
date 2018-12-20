@@ -3,8 +3,9 @@
 Contributors: etalented
 Tags: paypal, stripe, worldpay, payment form, ecommence
 Requires at least: 4.0
-Tested up to: 5.0
-Stable tag: 1.4.1
+Tested up to: 5.0.2
+Requires PHP: 5.6
+Stable tag: 1.4.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -132,6 +133,11 @@ Just follow these steps:
 6.  Remember to Save Changes
 
 == Changelog ==
+
+= 1.4.2 =
+*   Fixed expired link error when pressing save or reset on Processing tab
+*   Fixed "clone" reserved keyword issue
+*   Fixed save and reset buttons on Processing tab so that they now pertain to the columns that they are in
 
 = 1.4.1 =
 *   Fixed email address field not showing to be required

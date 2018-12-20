@@ -154,7 +154,7 @@ class MultiPay_Settings {
             update_option( 'qp_curr', $qp_curr);
             update_option( 'qp_setup', $qp_setup);
             qp_admin_notice(__('The forms have been updated','multipay'));
-            if ($_POST['qp_clone'] && !empty($_POST['new_form'])) self::clone($qp_setup['current'],$_POST['qp_clone']);
+            if ($_POST['qp_clone'] && !empty($_POST['new_form'])) self::form_clone($qp_setup['current'],$_POST['qp_clone']);
 
         }
 
@@ -252,7 +252,7 @@ class MultiPay_Settings {
     }
 
     // Clone the Form
-    function clone ($form,$clone) {
+    function form_clone ($form,$clone) {
         $update = qp_get_stored_options ($clone);update_option( 'qp_options'.$form, $update );
         $update = qp_get_stored_send ($clone);update_option( 'qp_send'.$form, $update );
         $update = qp_get_stored_coupon ($clone);update_option( 'qp_coupon'.$form, $update );
