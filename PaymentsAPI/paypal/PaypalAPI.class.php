@@ -238,25 +238,31 @@
 				if (empty($this->method)) return;
 				
 				$post = $this->dump();
-				$query = http_build_query($post);
-				$ch = curl_init();
 				
-				/*
-					Do request
-				*/
-				curl_setopt($ch,CURLOPT_URL, $this->api);
-				curl_setopt($ch,CURLOPT_POST, count($post));
-				curl_setopt($ch,CURLOPT_POSTFIELDS, $query);
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-				$this->response = curl_exec($ch);
+				if (function_exists('wp_remote_post')) {
+					$response = wp_remote_post($this->api, array('body' => $post, 'timeout' => 30));
+					$this->response = $response['body'];
+				} else {
+					$query = http_build_query($post);
+					$ch = curl_init();
+					
+					/*
+						Do request
+					*/
+					curl_setopt($ch,CURLOPT_URL, $this->api);
+					curl_setopt($ch,CURLOPT_POST, count($post));
+					curl_setopt($ch,CURLOPT_POSTFIELDS, $query);
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+					$this->response = curl_exec($ch);
+					
+					/*
+					Terminate connection
+					*/
+					curl_close($ch);
+				}
 				
 				if ($this->response) $this->formatResponse();
-				
-				/*
-					Terminate connection
-				*/
-				curl_close($ch);
 
 				return $this->response;
 				
