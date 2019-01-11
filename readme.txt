@@ -3,9 +3,9 @@
 Contributors: etalented
 Tags: paypal, stripe, worldpay, ecommerce, e-commerce, sales, sell, store, payments
 Requires at least: 4.0
-Tested up to: 5.0.2
+Tested up to: 5.0.3
 Requires PHP: 5.6
-Stable tag: 1.4.2
+Stable tag: 1.4.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,6 +133,10 @@ Just follow these steps:
 6.  Remember to Save Changes
 
 == Changelog ==
+
+= 1.4.3 =
+*   Deprecated CURL requests for HTTP API where TLS verification was disabled
+*   Help text update
 
 = 1.4.2 =
 *   Fixed expired link error when pressing save or reset on Processing tab

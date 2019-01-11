@@ -1472,11 +1472,11 @@ class MultiPay_Settings {
         <p>'.__('You use this option you will need a PayPal account and the API details.','multipay').'</p>
         <ol>
         <li>'.__('Login to your PayPal business account (or create an account if you don\'t have one)','multipay').'</li>
-        <li>'.__('Click on the <b>Profile</b> link on the top right of your screen','multipay').'</li>
-        <li>'.__('Select the <b>Profile and Settings</b> option','multipay').'</li>
-        <li>'.__('Your Merchant account ID is on your profile homepage','multipay').'</li>
-        <li>'.__('Go to <b>My Selling Preferences</b> then the <b>Update</b> link on the API Access option','multipay').'</li>
-        <li>'.__('Your API details are hidden behind the <b>View API Signature</b> link. If you haven\'t set up your API details click on the <b>Request API Credentials</b> link','multipay').'</li>
+        <li>'.__('Click on the Cog icon (Settings) on the top right of your screen','multipay').'</li>
+        <li>'.__('You will find Merchant Account ID on this page','multipay').'</li>
+        <li>'.__('Go to My Selling Preferences then the Update link on the API Access option','multipay').'</li>
+        <li>'.__('Scroll down to "NVP/SOAP API integration (Classic)" click on "Manage API credentials"','multipay').'</li>
+        <li>'.__('You will find your API Username, API Password and Signature on this page, click on "Show" for each to reveal them','multipay').'</li>
         <li>'.__('Copy the Merchant account ID and API details into the appropriate fields on the left','multipay').'</li>
         <li>'.__('Make sure the \'Use PayPal\' box is checked','multipay').'</li>
         <li>'.__('Update the settings','multipay').'</li>
@@ -1518,7 +1518,7 @@ class MultiPay_Settings {
         $payment = qp_get_amazon_api();
         $content = '<div class="qp-settings"><div class="qp-options">
         <h2 style="color:#B52C00">'.__('Amazon API Settings', 'multipay').'</h2>
-        <p style="color:red">Amazon Payments only works in the USA. I\'m working on a version for the rest of the world</p>
+        <p style="color:red">Amazon Payments only works in the USA. Support cannot be offered for this payment method and it will be deprecated in version 2.0.</p>
         <form id="" method="post" action="">
         <table width="100%">
         <tr>
