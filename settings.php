@@ -1775,7 +1775,7 @@ class MultiPay_Settings {
             <h2>'.__('Payment manager','multipay').'</h2>
             <p>'.__('The payment manager lists all pending and completed payments','multipay').', '.__('the merchant used to make the payment and the transaction number','multipay').'. '.__('There are options to delete single or multiple records and download all records.','multipay').'</p>
             <h2>'.__('All this for just $10','multipay').'</h2>
-            <p>'.__('Click the button below to pay for your upgrade','multipay').'. '.__('Once payment has cleared upgrading is automatic','multipay').'. '.__('But if something does go awry you will get an email with your authorisation key that you can enter below.','multipay').'</p>
+            <p>'.__('Click the button below to pay for your upgrade','multipay').'. '.__('Once payment has cleared upgrading is automatic','multipay').'. '.__('But if something does goes wrong, you will get an email with your authorisation key that you can enter below.','multipay').'<br><strong>'.__('Please note: upgrade will not work from an internal server or localhost - your website needs to be publically accessible.','multipay').'</strong></p>
             <p><input type="submit" name="Upgrade" class="button-primary" style="color: #FFF;" value="'.__('Upgrade to Pro', 'multipay').'" /></p>
             <h2>'.__('Activate your Upgrade','multipay').'</h2>
             <p>'.__('Enter the authorisation key below and click on the Activate button', 'multipay').':</p>

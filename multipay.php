@@ -3,7 +3,7 @@
 Plugin Name: MultiPay
 Plugin URI: https://wordpress.org/plugins/multipay/
 Description: MultiPay is a free eCommerce plugin that allows you to sell anything, simply
-Version: 1.4.3
+Version: 1.4.4
 Author: etalented
 Author URI: https://etalented.co.uk/
 Text-domain: multipay

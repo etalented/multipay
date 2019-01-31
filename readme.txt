@@ -5,7 +5,7 @@ Tags: paypal, stripe, worldpay, ecommerce, e-commerce, sales, sell, store, payme
 Requires at least: 4.0
 Tested up to: 5.0.3
 Requires PHP: 5.6
-Stable tag: 1.4.3
+Stable tag: 1.4.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,6 +133,9 @@ Just follow these steps:
 6.  Remember to Save Changes
 
 == Changelog ==
+
+= 1.4.4 =
+*   Added to upgrade information
 
 = 1.4.3 =
 *   Deprecated CURL requests for HTTP API where TLS verification was disabled
